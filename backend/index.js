@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 // Use the navigation routes
-app.use("/api/navigation", navigationRoutes);
+app.use("/", navigationRoutes);
 
 // Connect to the database
 mongoose
