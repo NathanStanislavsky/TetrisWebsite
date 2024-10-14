@@ -1,8 +1,9 @@
 import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 const App = () => {
   return (
-    <div className='bg-red-400 text-white'>App</div>
+    <BrowserRouter></>
   )
 }
 
