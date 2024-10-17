@@ -1,12 +1,36 @@
+import { useEffect, useState } from 'react';
+
 const Leaderboard = () => {
-  // Sample leaderboard data (can be replaced with actual data from an API)
-  const leaderboardData = [
-    { rank: 1, name: 'Player1', score: 1500 },
-    { rank: 2, name: 'Player2', score: 1400 },
-    { rank: 3, name: 'Player3', score: 1300 },
-    { rank: 4, name: 'Player4', score: 1200 },
-    { rank: 5, name: 'Player5', score: 1100 },
-  ];
+  const [leaderboardData, setLeaderboardData] = useState([]);  // Ensure the state is initialized with an empty array
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/navigation/api/scores');
+        if (!response.ok) {
+          throw new Error('Failed to fetch leaderboard data');
+        }
+        const data = await response.json();
+        setLeaderboardData(data.scores);  // Set the fetched data
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboardData();
+  }, []);
+
+  if (loading) {
+    return <p>Loading leaderboard...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className="container mx-auto mt-10">
@@ -20,13 +44,19 @@ const Leaderboard = () => {
           </tr>
         </thead>
         <tbody>
-          {leaderboardData.map((player) => (
-            <tr key={player.rank} className="border-b border-gray-200">
-              <td className="py-3 px-4">{player.rank}</td>
-              <td className="py-3 px-4">{player.name}</td>
-              <td className="py-3 px-4">{player.score}</td>
+          {Array.isArray(leaderboardData) && leaderboardData.length > 0 ? (
+            leaderboardData.map((player, index) => (
+              <tr key={index} className="border-b border-gray-200">
+                <td className="py-3 px-4">{index + 1}</td>
+                <td className="py-3 px-4">{player.player}</td>
+                <td className="py-3 px-4">{player.score}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3" className="py-3 px-4 text-center">No data available</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
