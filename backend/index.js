@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"; // Use `import` for dotenv
 import navigationRoutes from './routes/navigation.js'; // Import with `.js` extension
+import cors from 'cors';
 
 // Load environment variables
 dotenv.config();
@@ -11,6 +12,8 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+
+app.use(cors());
 
 app.use((req, res, next) => {
     console.log(req.path, req.method);

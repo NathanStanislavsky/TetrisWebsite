@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react';
 
 const Leaderboard = () => {
-  // State to store leaderboard data
-  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [leaderboardData, setLeaderboardData] = useState([]);  // Ensure the state is initialized with an empty array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch leaderboard data when the component mounts
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/scores');
+        const response = await fetch('http://localhost:3000/api/navigation');
         if (!response.ok) {
           throw new Error('Failed to fetch leaderboard data');
         }
         const data = await response.json();
-        setLeaderboardData(data.scores);  // Assuming your API response has a `scores` array
+        setLeaderboardData(data.scores);  // Set the fetched data
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -24,16 +22,14 @@ const Leaderboard = () => {
     };
 
     fetchLeaderboardData();
-  }, []); // Empty dependency array ensures this only runs once on component mount
+  }, []);
 
-  // Show a loading message while data is being fetched
   if (loading) {
-    return <p className="text-center">Loading leaderboard...</p>;
+    return <p>Loading leaderboard...</p>;
   }
 
-  // Show an error message if fetching fails
   if (error) {
-    return <p className="text-center text-red-500">Error: {error}</p>;
+    return <p>Error: {error}</p>;
   }
 
   return (
@@ -48,13 +44,19 @@ const Leaderboard = () => {
           </tr>
         </thead>
         <tbody>
-          {leaderboardData.map((player, index) => (
-            <tr key={index} className="border-b border-gray-200">
-              <td className="py-3 px-4">{index + 1}</td> {/* Index as rank */}
-              <td className="py-3 px-4">{player.player}</td> {/* Assuming `player` is the player's name */}
-              <td className="py-3 px-4">{player.score}</td>
+          {Array.isArray(leaderboardData) && leaderboardData.length > 0 ? (
+            leaderboardData.map((player, index) => (
+              <tr key={index} className="border-b border-gray-200">
+                <td className="py-3 px-4">{index + 1}</td>
+                <td className="py-3 px-4">{player.player}</td>
+                <td className="py-3 px-4">{player.score}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3" className="py-3 px-4 text-center">No data available</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
