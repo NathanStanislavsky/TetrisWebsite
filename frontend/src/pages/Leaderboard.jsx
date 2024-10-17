@@ -1,12 +1,40 @@
+import { useEffect, useState } from 'react';
+
 const Leaderboard = () => {
-  // Sample leaderboard data (can be replaced with actual data from an API)
-  const leaderboardData = [
-    { rank: 1, name: 'Player1', score: 1500 },
-    { rank: 2, name: 'Player2', score: 1400 },
-    { rank: 3, name: 'Player3', score: 1300 },
-    { rank: 4, name: 'Player4', score: 1200 },
-    { rank: 5, name: 'Player5', score: 1100 },
-  ];
+  // State to store leaderboard data
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch leaderboard data when the component mounts
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/scores');
+        if (!response.ok) {
+          throw new Error('Failed to fetch leaderboard data');
+        }
+        const data = await response.json();
+        setLeaderboardData(data.scores);  // Assuming your API response has a `scores` array
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboardData();
+  }, []); // Empty dependency array ensures this only runs once on component mount
+
+  // Show a loading message while data is being fetched
+  if (loading) {
+    return <p className="text-center">Loading leaderboard...</p>;
+  }
+
+  // Show an error message if fetching fails
+  if (error) {
+    return <p className="text-center text-red-500">Error: {error}</p>;
+  }
 
   return (
     <div className="container mx-auto mt-10">
@@ -20,10 +48,10 @@ const Leaderboard = () => {
           </tr>
         </thead>
         <tbody>
-          {leaderboardData.map((player) => (
-            <tr key={player.rank} className="border-b border-gray-200">
-              <td className="py-3 px-4">{player.rank}</td>
-              <td className="py-3 px-4">{player.name}</td>
+          {leaderboardData.map((player, index) => (
+            <tr key={index} className="border-b border-gray-200">
+              <td className="py-3 px-4">{index + 1}</td> {/* Index as rank */}
+              <td className="py-3 px-4">{player.player}</td> {/* Assuming `player` is the player's name */}
               <td className="py-3 px-4">{player.score}</td>
             </tr>
           ))}
