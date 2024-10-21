@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const Leaderboard = () => {
-  const [leaderboardData, setLeaderboardData] = useState([]);  // Ensure the state is initialized with an empty array
+  const [leaderboardData, setLeaderboardData] = useState([]); // Ensure the state is initialized with an empty array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/scores');
+        const response = await fetch("http://localhost:3000/api/scores");
         if (!response.ok) {
-          throw new Error('Failed to fetch leaderboard data');
+          throw new Error("Failed to fetch leaderboard data");
         }
         const data = await response.json();
-        setLeaderboardData(data.scores);  // Set the fetched data
+        setLeaderboardData(data.scores); // Set the fetched data
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -34,8 +34,10 @@ const Leaderboard = () => {
 
   return (
     <div className="container mx-auto mt-10">
-      <h1 className="text-4xl font-bold text-center mb-8">Leaderboard</h1>
-      <table className="min-w-full bg-white border border-gray-300">
+      <h1 className="text-4xl font-bold text-center text-gray-600 bg-gray-200 h-20 flex items-center justify-center">
+        Leaderboard
+      </h1>
+      <table className="min-w-full bg-white border">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm">
             <th className="py-3 px-4 text-left">Rank</th>
@@ -54,7 +56,9 @@ const Leaderboard = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="py-3 px-4 text-center">No data available</td>
+              <td colSpan="3" className="py-3 px-4 text-center">
+                No data available
+              </td>
             </tr>
           )}
         </tbody>

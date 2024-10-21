@@ -6,7 +6,15 @@ import Navbar from './components/Navbar';
 
 const App = () => {
   return (
-    <div className="App">
+    <div className="App"
+    style={{
+      backgroundImage: `url('../public/tetrisBackground.webp')`,  // Path to your image
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      minHeight: '100vh',
+    }}
+    >
       <BrowserRouter>
         <Navbar />
         <div className="pages">
