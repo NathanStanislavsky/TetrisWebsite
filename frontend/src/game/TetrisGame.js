@@ -18,26 +18,38 @@ export default class TetrisGame {
   }
 
   createPiece() {
-    const pieceNames = Object.keys(TETRIS_PIECES);
-    const randomPiece =
-      pieceNames[Math.floor(Math.random() * pieceNames.length)];
-    return TETRIS_PIECES[randomPiece];
+    const pieceNames = Object.keys(TETRIS_PIECES);  
+    const randomPiece = pieceNames[Math.floor(Math.random() * pieceNames.length)];  
+    return {
+      shape: TETRIS_PIECES[randomPiece],  // The actual piece shape (2D array)
+      type: randomPiece                   // (e.g., "I", "T", "L")
+    };
   }
 
   drawPiece() {
     const blockSize = 30;
     const { x, y } = this.activePiecePosition;
 
-    for (let row = 0; row < this.activePiece.length; row++) {
-      for (let col = 0; col < this.activePiece[row].length; col++) {
-        if (this.activePiece[row][col] === 1) {
-          this.context.fillStyle = "red";
-          this.context.fillRect(
-            (x + col) * blockSize,
-            (y + row) * blockSize,
-            blockSize,
-            blockSize
-          );
+    for (let row = 0; row < this.activePiece.shape.length; row++) {
+      for (let col = 0; col < this.activePiece.shape[row].length; col++) {
+        if (this.activePiece.shape[row][col] !== 0) {
+          if (this.activePiece.type === "I") {
+            this.context.fillStyle = "cyan";
+          } else if (this.activePiece.type === "T") {
+            this.context.fillStyle = "purple";
+          } else if (this.activePiece.type === "O") {
+            this.context.fillStyle = "yellow";
+          } else if (this.activePiece.type === "S") {
+            this.context.fillStyle = "red";
+          } else if (this.activePiece.type === "Z") {
+            this.context.fillStyle = "green";
+          } else if (this.activePiece.type === "L") {
+            this.context.fillStyle = "orange";
+          } else if (this.activePiece.type === "J") {
+            this.context.fillStyle = "pink";
+          }
+
+          this.context.fillRect((x + col) * blockSize, (y + row) * blockSize, blockSize, blockSize);
         }
       }
     }
