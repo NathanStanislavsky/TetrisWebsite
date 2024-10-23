@@ -7,9 +7,9 @@ export default class TetrisGame {
     this.activePiece = this.createPiece();
     this.activePiecePosition = { x: 3, y: 0 };
     this.score = 0;
-    this.dropCounter = 0;       // Initialize the drop counter
-    this.dropInterval = 1000;   // Move piece down every 1000 ms (1 second)
-    this.lastTime = 0;          // Track the last frame time for delta calculation
+    this.dropCounter = 0; // Initialize the drop counter
+    this.dropInterval = 1000; // Move piece down every 1000 ms (1 second)
+    this.lastTime = 0; // Track the last frame time for delta calculation
   }
 
   createGrid(rows, cols) {
@@ -98,26 +98,29 @@ export default class TetrisGame {
   }
 
   update(time = 0) {
-    const deltaTime = time - this.lastTime;  // Calculate time difference since last frame
-    this.lastTime = time;                    // Update last time with current time
-    this.dropCounter += deltaTime;           // Increase drop counter by deltaTime
-  
+    const deltaTime = time - this.lastTime; // Calculate time difference since last frame
+    this.lastTime = time; // Update last time with current time
+    this.dropCounter += deltaTime; // Increase drop counter by deltaTime
+
     console.log(`DeltaTime: ${deltaTime}, DropCounter: ${this.dropCounter}`);
-  
+
     // Move the piece down every second (1000 ms)
     if (this.dropCounter > this.dropInterval) {
-      const newPos = { x: this.activePiecePosition.x, y: this.activePiecePosition.y + 1 };
-  
+      const newPos = {
+        x: this.activePiecePosition.x,
+        y: this.activePiecePosition.y + 1,
+      };
+
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
-        this.activePiecePosition.y += 1;  // Move the piece down
+        this.activePiecePosition.y += 1; // Move the piece down
         console.log(`Piece Y Position: ${this.activePiecePosition.y}`);
       } else {
-        this.lockPiece();  // Lock the piece if collision is detected
-        this.activePiece = this.createPiece();  // Generate a new piece
-        this.activePiecePosition = { x: 3, y: 0 };  // Reset position for the new piece
+        this.lockPiece(); // Lock the piece if collision is detected
+        this.activePiece = this.createPiece(); // Generate a new piece
+        this.activePiecePosition = { x: 3, y: 0 }; // Reset position for the new piece
       }
-  
-      this.dropCounter = 0;  // Reset the drop counter after the piece moves
+
+      this.dropCounter = 0; // Reset the drop counter after the piece moves
     }
   }
 
