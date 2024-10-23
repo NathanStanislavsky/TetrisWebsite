@@ -20,7 +20,7 @@ export const Play = () => {
 
   return (
     <div className="flex items-center justify-center my-6">
-      <canvas ref={canvasRef} width="300" height="600" className="border"></canvas> {/* Tetris game canvas */}
+      <canvas ref={canvasRef} width="300" height="600" className="border"></canvas>  {/* Tetris game canvas */}
     </div>
   );
 };
