@@ -8,13 +8,14 @@ export const Play = () => {
     const canvas = canvasRef.current;
     const tetrisGame = new TetrisGame(canvas);
 
-    const gameLoop = () => {
-      tetrisGame.update();
-      tetrisGame.render();
-      requestAnimationFrame(gameLoop);
+    const gameLoop = (time) => {
+      console.log("Game Loop Running");  // Log to check if game loop is running
+      tetrisGame.update(time);           // Pass the time to update
+      tetrisGame.render();               // Render the game
+      requestAnimationFrame(gameLoop);   // Continue the loop
     };
 
-    gameLoop();
+    requestAnimationFrame(gameLoop);     // Start the loop
 
   }, []);
 
