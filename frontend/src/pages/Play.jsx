@@ -1,5 +1,5 @@
-import { useRef, useEffect } from "react";
-import TetrisGame from "../game/TetrisGame";
+import { useRef, useEffect } from 'react';
+import TetrisGame from '../game/TetrisGame';
 
 export const Play = () => {
   const canvasRef = useRef(null);
@@ -9,24 +9,41 @@ export const Play = () => {
     const tetrisGame = new TetrisGame(canvas);
 
     const gameLoop = (time) => {
-      console.log("Game Loop Running"); // Log to check if game loop is running
-      tetrisGame.update(time); // Pass the time to update
-      tetrisGame.render(); // Render the game
-      requestAnimationFrame(gameLoop); // Continue the loop
+      tetrisGame.update(time);
+      tetrisGame.render();
+      requestAnimationFrame(gameLoop);
     };
 
-    requestAnimationFrame(gameLoop); // Start the loop
+    const handleKeyDown = (event) => {
+      switch (event.key) {
+        case 'ArrowLeft':
+          tetrisGame.moveLeft();
+          break;
+        case 'ArrowRight':
+          tetrisGame.moveRight();
+          break;
+        case 'ArrowDown':
+          tetrisGame.softDrop();
+          break;
+        case 'ArrowUp':
+          tetrisGame.rotatePiece();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    requestAnimationFrame(gameLoop);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   return (
     <div className="flex items-center justify-center my-6">
-      <canvas
-        ref={canvasRef}
-        width="300"
-        height="600"
-        className="border"
-      ></canvas>{" "}
-      {}
+      <canvas ref={canvasRef} width="300" height="600" className="border"></canvas>
     </div>
   );
 };
