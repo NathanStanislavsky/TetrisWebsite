@@ -15,7 +15,7 @@ export default class TetrisGame {
   createGrid(rows, cols) {
     const grid = [];
     for (let row = 0; row < rows; row++) {
-      grid.push(new Array(cols).fill(0));
+      grid.push(new Array(cols).fill({ value: 0, color: "black" }));  // Empty cells start with black color
     }
     return grid;
   }
@@ -71,12 +71,12 @@ export default class TetrisGame {
           const newY = position.y + row;
           const newX = position.x + col;
           if (
-            newY >= this.grid.length || // Reached the bottom
-            newX < 0 || // Hit the left wall
-            newX >= this.grid[0].length || // Hit the right wall
-            this.grid[newY][newX] !== 0 // Collided with another piece
+            newY >= this.grid.length ||          // Bottom boundary
+            newX < 0 ||                          // Left boundary
+            newX >= this.grid[0].length ||       // Right boundary
+            this.grid[newY][newX].value !== 0    // Collision with locked piece
           ) {
-            return true; // Collision detected
+            return true;
           }
         }
       }
@@ -84,14 +84,29 @@ export default class TetrisGame {
     return false;
   }
 
+  getPieceColor(type) {
+    const colors = {
+      I: "cyan",
+      T: "purple",
+      O: "yellow",
+      S: "red",
+      Z: "green",
+      L: "orange",
+      J: "pink"
+    };
+    return colors[type];
+  }
+
   lockPiece() {
-    // Lock the piece into the grid
+    const pieceColor = this.getPieceColor(this.activePiece.type); // Get the color based on the piece type
+  
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
         if (this.activePiece.shape[row][col] !== 0) {
-          this.grid[this.activePiecePosition.y + row][
-            this.activePiecePosition.x + col
-          ] = this.activePiece.shape[row][col];
+          this.grid[this.activePiecePosition.y + row][this.activePiecePosition.x + col] = {
+            value: 1,
+            color: pieceColor  // Store the color of the piece when it locks
+          };
         }
       }
     }
@@ -172,7 +187,12 @@ export default class TetrisGame {
     const blockSize = 30;
     for (let row = 0; row < this.grid.length; row++) {
       for (let col = 0; col < this.grid[row].length; col++) {
-        this.context.fillStyle = this.grid[row][col] === 1 ? "blue" : "black";
+        const cell = this.grid[row][col];
+        if (cell.value === 1) {
+          this.context.fillStyle = cell.color;  // Use the color stored in the grid
+        } else {
+          this.context.fillStyle = "black";     // Empty cells are black
+        }
         this.context.fillRect(
           col * blockSize,
           row * blockSize,
