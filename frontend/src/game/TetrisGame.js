@@ -157,7 +157,6 @@ export default class TetrisGame {
       rotatedPiece.push(newRow);
     }
 
-    // Only apply rotation if no collision occurs
     if (!this.checkCollision(rotatedPiece, this.activePiecePosition)) {
       this.activePiece.shape = rotatedPiece;
     }
