@@ -97,6 +97,31 @@ export default class TetrisGame {
     }
   }
 
+  moveLeft() {
+    const newPos = { x: this.activePiecePosition.x - 1, y: this.activePiecePosition.y };
+    if (!this.checkCollision(this.activePiece.shape, newPos)) {
+      this.activePiecePosition.x -= 1;  // Move the piece left
+    }
+  }
+  
+  moveRight() {
+    const newPos = { x: this.activePiecePosition.x + 1, y: this.activePiecePosition.y };
+    if (!this.checkCollision(this.activePiece.shape, newPos)) {
+      this.activePiecePosition.x += 1;  // Move the piece right
+    }
+  }
+  
+  softDrop() {
+    const newPos = { x: this.activePiecePosition.x, y: this.activePiecePosition.y + 1 };
+    if (!this.checkCollision(this.activePiece.shape, newPos)) {
+      this.activePiecePosition.y += 1;  // Move the piece down
+    } else {
+      this.lockPiece();  // Lock the piece if it collides when moving down
+      this.activePiece = this.createPiece();  // Create a new piece
+      this.activePiecePosition = { x: 3, y: 0 };  // Reset to the top
+    }
+  }
+
   update(time = 0) {
     const deltaTime = time - this.lastTime; // Calculate time difference since last frame
     this.lastTime = time; // Update last time with current time
