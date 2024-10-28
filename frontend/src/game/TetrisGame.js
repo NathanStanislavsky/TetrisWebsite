@@ -156,6 +156,13 @@ export default class TetrisGame {
         console.log(`Piece Y Position: ${this.activePiecePosition.y}`);
       } else {
         this.lockPiece(); // Lock the piece if collision is detected
+
+        for (let row = 0; row < this.grid.length(); row++) {
+          if (this.getFilledRow(row)) {
+            this.clearLine(row);
+          }
+        }
+
         this.activePiece = this.createPiece(); // Generate a new piece
         this.activePiecePosition = { x: 3, y: 0 }; // Reset position for the new piece
       }
@@ -183,19 +190,18 @@ export default class TetrisGame {
     this.drawPiece();
   }
 
-  getFilledRow() {
-    for (let row = 0; row < this.grid.length; row++) {
-      let numFilled = 0;
-      for (let col = 0; col < this.grid[row].length; col++) {
-        const cell = this.grid[row][col];
-        if (cell.value === 1) {
-          numFilled += 1;
-        }
-      }
+  getFilledRow(row) {
+    let numFilled = 0;
+    for (let col = 0; col < this.grid[row].length; col++) {
+      const cell = this.grid[row][col];
 
-      if (numFilled == this.grid[row].length) {
-        return row;
+      if (cell.value === 1) {
+        numFilled += 1;
       }
+    }
+
+    if (numFilled == this.grid[row].length) {
+      return true;
     }
   }
 
