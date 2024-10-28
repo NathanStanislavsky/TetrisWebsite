@@ -183,6 +183,30 @@ export default class TetrisGame {
     this.drawPiece();
   }
 
+  getFilledRow() {
+    for (let row = 0; row < this.grid.length; row++) {
+      let numFilled = 0;
+      for (let col = 0; col < this.grid[row].length; col++) {
+        const cell = this.grid[row][col];
+        if (cell.value === 1) {
+          numFilled += 1;
+        }
+      }
+
+      if (numFilled == this.grid[row].length) {
+        return row;
+      }
+    }
+  }
+
+  clearLine(row) {
+    for (let col = 0; col < this.grid[row].length; col++) {
+      const cell = this.grid[row][col];
+      
+      cell.value = 0;
+    }
+  }
+
   drawGrid() {
     const blockSize = 30;
     for (let row = 0; row < this.grid.length; row++) {
