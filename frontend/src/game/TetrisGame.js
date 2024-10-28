@@ -141,32 +141,31 @@ export default class TetrisGame {
     const deltaTime = time - this.lastTime; // Calculate time difference since last frame
     this.lastTime = time; // Update last time with current time
     this.dropCounter += deltaTime; // Increase drop counter by deltaTime
-
-    console.log(`DeltaTime: ${deltaTime}, DropCounter: ${this.dropCounter}`);
-
+  
     // Move the piece down every second (1000 ms)
     if (this.dropCounter > this.dropInterval) {
       const newPos = {
         x: this.activePiecePosition.x,
         y: this.activePiecePosition.y + 1,
       };
-
+  
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
         this.activePiecePosition.y += 1; // Move the piece down
-        console.log(`Piece Y Position: ${this.activePiecePosition.y}`);
       } else {
         this.lockPiece(); // Lock the piece if collision is detected
-
-        for (let row = 0; row < this.grid.length(); row++) {
+  
+        // Check each row for filled rows after locking the piece
+        for (let row = this.grid.length - 1; row >= 0; row--) {
           if (this.getFilledRow(row)) {
             this.clearLine(row);
+            row++; // Re-check the same row after clearing, as rows above have shifted down
           }
         }
-
+  
         this.activePiece = this.createPiece(); // Generate a new piece
         this.activePiecePosition = { x: 3, y: 0 }; // Reset position for the new piece
       }
-
+  
       this.dropCounter = 0; // Reset the drop counter after the piece moves
     }
   }
@@ -191,25 +190,30 @@ export default class TetrisGame {
   }
 
   getFilledRow(row) {
-    let numFilled = 0;
     for (let col = 0; col < this.grid[row].length; col++) {
-      const cell = this.grid[row][col];
-
-      if (cell.value === 1) {
-        numFilled += 1;
+      if (this.grid[row][col].value === 0) {
+        return false; 
       }
     }
-
-    if (numFilled == this.grid[row].length) {
-      return true;
-    }
+    return true;
   }
 
   clearLine(row) {
+    // Clear the filled row by setting all cells to empty
     for (let col = 0; col < this.grid[row].length; col++) {
-      const cell = this.grid[row][col];
-      
-      cell.value = 0;
+      this.grid[row][col] = { value: 0, color: "black" };
+    }
+  
+    // Move all rows above down by one
+    for (let r = row; r > 0; r--) {
+      for (let col = 0; col < this.grid[r].length; col++) {
+        this.grid[r][col] = { ...this.grid[r - 1][col] };  // Copy the cell from the row above
+      }
+    }
+  
+    // Clear the top row
+    for (let col = 0; col < this.grid[0].length; col++) {
+      this.grid[0][col] = { value: 0, color: "black" };
     }
   }
 
