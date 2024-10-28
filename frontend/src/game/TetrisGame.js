@@ -130,43 +130,39 @@ export default class TetrisGame {
     const newPos = { x: this.activePiecePosition.x, y: this.activePiecePosition.y + 1 };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
       this.activePiecePosition.y += 1;  // Move the piece down
-    } else {
-      this.lockPiece();  // Lock the piece if it collides when moving down
-      this.activePiece = this.createPiece();  // Create a new piece
-      this.activePiecePosition = { x: 3, y: 0 };  // Reset to the top
     }
   }
 
   update(time = 0) {
-    const deltaTime = time - this.lastTime; // Calculate time difference since last frame
-    this.lastTime = time; // Update last time with current time
-    this.dropCounter += deltaTime; // Increase drop counter by deltaTime
+    const deltaTime = time - this.lastTime;
+    this.lastTime = time;
+    this.dropCounter += deltaTime;
   
-    // Move the piece down every second (1000 ms)
     if (this.dropCounter > this.dropInterval) {
       const newPos = {
         x: this.activePiecePosition.x,
         y: this.activePiecePosition.y + 1,
       };
-  
+      
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
-        this.activePiecePosition.y += 1; // Move the piece down
+        this.activePiecePosition.y += 1;
       } else {
-        this.lockPiece(); // Lock the piece if collision is detected
-  
-        // Check each row for filled rows after locking the piece
+        this.lockPiece();
+
         for (let row = this.grid.length - 1; row >= 0; row--) {
           if (this.getFilledRow(row)) {
             this.clearLine(row);
-            row++; // Re-check the same row after clearing, as rows above have shifted down
+            row++;
           }
         }
+
+        console.log("h");
   
-        this.activePiece = this.createPiece(); // Generate a new piece
-        this.activePiecePosition = { x: 3, y: 0 }; // Reset position for the new piece
+        this.activePiece = this.createPiece();
+        this.activePiecePosition = { x: 3, y: 0 };
       }
   
-      this.dropCounter = 0; // Reset the drop counter after the piece moves
+      this.dropCounter = 0;
     }
   }
 
