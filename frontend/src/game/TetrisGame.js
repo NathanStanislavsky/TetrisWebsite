@@ -10,6 +10,7 @@ export default class TetrisGame {
     this.dropCounter = 0; // Initialize the drop counter
     this.dropInterval = 1000; // Move piece down every 1000 ms (1 second)
     this.lastTime = 0; // Track the last frame time for delta calculation
+    this.score = 0;
   }
 
   createGrid(rows, cols) {
