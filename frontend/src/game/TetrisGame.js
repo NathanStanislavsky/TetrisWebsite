@@ -131,6 +131,7 @@ export default class TetrisGame {
     const newPos = { x: this.activePiecePosition.x, y: this.activePiecePosition.y + 1 };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
       this.activePiecePosition.y += 1;  // Move the piece down
+      this.score += 1;
     }
   }
 
@@ -156,12 +157,12 @@ export default class TetrisGame {
             row++;
           }
         }
-
-        console.log("h");
   
         this.activePiece = this.createPiece();
         this.activePiecePosition = { x: 3, y: 0 };
       }
+
+      console.log(this.score);
   
       this.dropCounter = 0;
     }
