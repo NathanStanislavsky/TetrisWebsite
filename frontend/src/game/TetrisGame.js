@@ -12,6 +12,7 @@ export default class TetrisGame {
     this.lastTime = 0; // Track the last frame time for delta calculation
     this.score = 0;
     this.level = 0;
+    this.numLinesCleared = 0;
   }
 
   createGrid(rows, cols) {
