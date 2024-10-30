@@ -153,11 +153,27 @@ export default class TetrisGame {
       } else {
         this.lockPiece();
 
+        let linesClearedTempCount = 0;
         for (let row = this.grid.length - 1; row >= 0; row--) {
           if (this.getFilledRow(row)) {
             this.clearLine(row);
             row++;
+            this.numLinesCleared += 1;
+            linesClearedTempCount += 1;
           }
+        }
+
+        if (linesClearedTempCount === 1) {
+          this.score += 40 * (this.level + 1);
+        }
+        if (linesClearedTempCount === 2) {
+          this.score += 100 * (this.level + 1);
+        }
+        if (linesClearedTempCount === 3) {
+          this.score += 300 * (this.level + 1);
+        }
+        if (linesClearedTempCount === 4) {
+          this.score += 1200 * (this.level + 1);
         }
   
         this.activePiece = this.createPiece();
