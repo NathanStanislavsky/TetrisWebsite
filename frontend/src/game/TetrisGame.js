@@ -10,12 +10,16 @@ export default class TetrisGame {
     this.dropCounter = 0; // Initialize the drop counter
     this.dropInterval = 1000; // Move piece down every 1000 ms (1 second)
     this.lastTime = 0; // Track the last frame time for delta calculation
+    this.score = 0;
+    this.level = 0;
+    this.numLinesCleared = 0;
+    this.MAX_LEVEL = 30;
   }
 
   createGrid(rows, cols) {
     const grid = [];
     for (let row = 0; row < rows; row++) {
-      grid.push(new Array(cols).fill({ value: 0, color: "black" }));  // Empty cells start with black color
+      grid.push(new Array(cols).fill({ value: 0, color: "black" })); // Empty cells start with black color
     }
     return grid;
   }
@@ -71,10 +75,10 @@ export default class TetrisGame {
           const newY = position.y + row;
           const newX = position.x + col;
           if (
-            newY >= this.grid.length ||          // Bottom boundary
-            newX < 0 ||                          // Left boundary
-            newX >= this.grid[0].length ||       // Right boundary
-            this.grid[newY][newX].value !== 0    // Collision with locked piece
+            newY >= this.grid.length || // Bottom boundary
+            newX < 0 || // Left boundary
+            newX >= this.grid[0].length || // Right boundary
+            this.grid[newY][newX].value !== 0 // Collision with locked piece
           ) {
             return true;
           }
@@ -92,20 +96,22 @@ export default class TetrisGame {
       S: "red",
       Z: "green",
       L: "orange",
-      J: "pink"
+      J: "pink",
     };
     return colors[type];
   }
 
   lockPiece() {
     const pieceColor = this.getPieceColor(this.activePiece.type); // Get the color based on the piece type
-  
+
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
         if (this.activePiece.shape[row][col] !== 0) {
-          this.grid[this.activePiecePosition.y + row][this.activePiecePosition.x + col] = {
+          this.grid[this.activePiecePosition.y + row][
+            this.activePiecePosition.x + col
+          ] = {
             value: 1,
-            color: pieceColor  // Store the color of the piece when it locks
+            color: pieceColor, // Store the color of the piece when it locks
           };
         }
       }
@@ -113,23 +119,33 @@ export default class TetrisGame {
   }
 
   moveLeft() {
-    const newPos = { x: this.activePiecePosition.x - 1, y: this.activePiecePosition.y };
+    const newPos = {
+      x: this.activePiecePosition.x - 1,
+      y: this.activePiecePosition.y,
+    };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x -= 1;  // Move the piece left
+      this.activePiecePosition.x -= 1; // Move the piece left
     }
   }
-  
+
   moveRight() {
-    const newPos = { x: this.activePiecePosition.x + 1, y: this.activePiecePosition.y };
+    const newPos = {
+      x: this.activePiecePosition.x + 1,
+      y: this.activePiecePosition.y,
+    };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x += 1;  // Move the piece right
+      this.activePiecePosition.x += 1; // Move the piece right
     }
   }
-  
+
   softDrop() {
-    const newPos = { x: this.activePiecePosition.x, y: this.activePiecePosition.y + 1 };
+    const newPos = {
+      x: this.activePiecePosition.x,
+      y: this.activePiecePosition.y + 1,
+    };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.y += 1;  // Move the piece down
+      this.activePiecePosition.y += 1; // Move the piece down
+      this.score += 1;
     }
   }
 
@@ -137,33 +153,64 @@ export default class TetrisGame {
     const deltaTime = time - this.lastTime;
     this.lastTime = time;
     this.dropCounter += deltaTime;
-  
+
     if (this.dropCounter > this.dropInterval) {
       const newPos = {
         x: this.activePiecePosition.x,
         y: this.activePiecePosition.y + 1,
       };
-      
+
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
         this.activePiecePosition.y += 1;
       } else {
         this.lockPiece();
 
+        let linesClearedTempCount = 0;
         for (let row = this.grid.length - 1; row >= 0; row--) {
           if (this.getFilledRow(row)) {
             this.clearLine(row);
             row++;
+            this.numLinesCleared += 1;
+            linesClearedTempCount += 1;
           }
         }
 
-        console.log("h");
-  
+        // Score update based on lines cleared
+        if (linesClearedTempCount === 1) {
+          this.score += 40 * (this.level + 1);
+        } else if (linesClearedTempCount === 2) {
+          this.score += 100 * (this.level + 1);
+        } else if (linesClearedTempCount === 3) {
+          this.score += 300 * (this.level + 1);
+        } else if (linesClearedTempCount === 4) {
+          this.score += 1200 * (this.level + 1);
+        }
+
+        // Create a new piece and reset position
         this.activePiece = this.createPiece();
         this.activePiecePosition = { x: 3, y: 0 };
       }
-  
+
+      // Check level progress after clearing lines
+      if (
+        this.numLinesCleared % 10 === 0 &&
+        this.numLinesCleared !== 0 &&
+        this.level < this.MAX_LEVEL
+      ) {
+        this.updateLevel(); 
+      }
+
       this.dropCounter = 0;
     }
+  }
+
+  calculateGravityInterval(level) {
+    return Math.pow(0.8 - (level - 1) * 0.007, level - 1) * 1000;
+  }
+
+  updateLevel() {
+    this.level += 1;
+    this.dropInterval = this.calculateGravityInterval(this.level);
   }
 
   rotatePiece() {
@@ -188,7 +235,7 @@ export default class TetrisGame {
   getFilledRow(row) {
     for (let col = 0; col < this.grid[row].length; col++) {
       if (this.grid[row][col].value === 0) {
-        return false; 
+        return false;
       }
     }
     return true;
@@ -199,14 +246,14 @@ export default class TetrisGame {
     for (let col = 0; col < this.grid[row].length; col++) {
       this.grid[row][col] = { value: 0, color: "black" };
     }
-  
+
     // Move all rows above down by one
     for (let r = row; r > 0; r--) {
       for (let col = 0; col < this.grid[r].length; col++) {
-        this.grid[r][col] = { ...this.grid[r - 1][col] };  // Copy the cell from the row above
+        this.grid[r][col] = { ...this.grid[r - 1][col] }; // Copy the cell from the row above
       }
     }
-  
+
     // Clear the top row
     for (let col = 0; col < this.grid[0].length; col++) {
       this.grid[0][col] = { value: 0, color: "black" };
@@ -219,9 +266,9 @@ export default class TetrisGame {
       for (let col = 0; col < this.grid[row].length; col++) {
         const cell = this.grid[row][col];
         if (cell.value === 1) {
-          this.context.fillStyle = cell.color;  // Use the color stored in the grid
+          this.context.fillStyle = cell.color; // Use the color stored in the grid
         } else {
-          this.context.fillStyle = "black";     // Empty cells are black
+          this.context.fillStyle = "black"; // Empty cells are black
         }
         this.context.fillRect(
           col * blockSize,
