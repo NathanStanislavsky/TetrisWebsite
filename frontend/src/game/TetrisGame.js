@@ -148,12 +148,13 @@ export default class TetrisGame {
     this.activePiecePosition = { x: 3, y: 0 };
 
     if (this.isGameOver()) {
-      this.endGame();
+      this.endGame = true;
     }
   }
 
-  endGame() {
-    this.endGame = true;
+
+  setGameOver(value) {
+    this.endGame = value;
   }
 
   storePiece() {
