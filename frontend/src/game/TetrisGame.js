@@ -19,6 +19,8 @@ export default class TetrisGame {
     this.MAX_LEVEL = 30;
     this.storedPiece = null;
     this.storedAPiece = false;
+
+    this.nextPiece = null;
   }
 
   createGrid(rows, cols) {
