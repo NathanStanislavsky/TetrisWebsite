@@ -256,6 +256,16 @@ export default class TetrisGame {
     }
   }
 
+  hardDrop() {
+    const ghostPosition = this.getPseudoPosition();
+    
+    this.activePiecePosition = ghostPosition;
+    
+    this.score += (ghostPosition.y - this.activePiecePosition.y) * 2; // hard drop bonus points
+
+    this.lockPiece();
+}
+
   lockPiece() {
     const pieceColor = this.getPieceColor(this.activePiece.type); 
 
