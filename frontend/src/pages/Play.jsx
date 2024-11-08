@@ -8,22 +8,20 @@ export const Play = () => {
 
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0);
-  const [gameOver, setGameOver] = useState(false); // State to track game over
+  const [gameOver, setGameOver] = useState(false);
+  const tetrisGameRef = useRef(null);
 
-  useEffect(() => {
+  const initializeGame = () => {
     const canvas = canvasRef.current;
     const storedPieceCanvas = storedPieceCanvasRef.current;
     const nextPieceCanvas = nextPieceCanvasRef.current;
-    const tetrisGame = new TetrisGame(
-      canvas,
-      storedPieceCanvas,
-      nextPieceCanvas
-    );
+    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas, nextPieceCanvas);
+    tetrisGameRef.current = tetrisGame;
 
     const gameLoop = (time) => {
       if (tetrisGame.endGame) {
-        setGameOver(true); // Set game over state
-        return; // Stop the game loop
+        setGameOver(true);
+        return;
       }
 
       tetrisGame.update(time);
@@ -35,7 +33,16 @@ export const Play = () => {
       requestAnimationFrame(gameLoop);
     };
 
+    requestAnimationFrame(gameLoop);
+  };
+
+  useEffect(() => {
+    initializeGame();
+
     const handleKeyDown = (event) => {
+      if (gameOver) return;
+
+      const tetrisGame = tetrisGameRef.current;
       switch (event.key) {
         case "ArrowLeft":
           tetrisGame.moveLeft();
@@ -61,22 +68,23 @@ export const Play = () => {
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    requestAnimationFrame(gameLoop);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [gameOver]); // Add gameOver as a dependency to restart or stop the game
+  }, [gameOver]);
+
+  const restartGame = () => {
+    setGameOver(false);
+    setScore(0);
+    setLevel(0);
+    initializeGame();
+  };
 
   return (
-    <div className="flex items-start justify-center my-6 space-x-8">
+    <div className="flex items-start justify-center my-6 space-x-8 relative">
       {/* Game Canvas */}
-      <canvas
-        ref={canvasRef}
-        width="300"
-        height="600"
-        className="border"
-      ></canvas>
+      <canvas ref={canvasRef} width="300" height="600" className="border"></canvas>
 
       <div className="text-left text-white bg-slate-500 p-10 w-40">
         <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
@@ -85,12 +93,22 @@ export const Play = () => {
         <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
         <h4 className="text-lg font-semibold">Next Piece</h4>
         <canvas ref={nextPieceCanvasRef} width="80" height="80"></canvas>
-        {gameOver && (
-          <div className="text-red-500 mt-4 text-center">
-            <h2 className="text-2xl font-bold">Game Over</h2>
-          </div>
-        )}
       </div>
+
+      {/* Full-Screen End Game Overlay */}
+      {gameOver && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-8">Game Over</h2>
+            <button
+              onClick={restartGame}
+              className="bg-red-500 text-white px-6 py-3 rounded text-2xl hover:bg-red-700"
+            >
+              Restart Game
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

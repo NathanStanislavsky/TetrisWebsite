@@ -157,6 +157,14 @@ export default class TetrisGame {
     this.endGame = value;
   }
 
+  setScore(value) {
+    this.score = value;
+  }
+
+  setLevel(value) {
+    this.level = value;
+  }
+
   storePiece() {
     if (this.storedAPiece) {
       return;
