@@ -42,6 +42,9 @@ export const Play = () => {
         case "Shift":
           tetrisGame.storePiece();
           break;
+        case " ":
+          tetrisGame.hardDrop();
+          break;
         default:
           break;
       }
