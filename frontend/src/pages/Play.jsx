@@ -4,6 +4,7 @@ import TetrisGame from "../game/TetrisGame";
 export const Play = () => {
   const canvasRef = useRef(null);
   const storedPieceCanvasRef = useRef(null); // Reference for stored piece canvas
+  const nextPieceCanvasRef = useRef(null);
 
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0);
@@ -11,7 +12,8 @@ export const Play = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const storedPieceCanvas = storedPieceCanvasRef.current;
-    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas); // Pass both canvases
+    const nextPieceCanvas = nextPieceCanvasRef.current;
+    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas, nextPieceCanvas); // Pass both canvases
 
     const gameLoop = (time) => {
       tetrisGame.update(time);
@@ -58,12 +60,13 @@ export const Play = () => {
       {/* Game Canvas */}
       <canvas ref={canvasRef} width="300" height="600" className="border"></canvas>
 
-      {/* Stored Piece Canvas */}
       <div className="text-left text-white bg-slate-500 p-10 w-40">
         <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
         <h3 className="text-xl mb-4">Level: {level}</h3>
         <h4 className="text-lg font-semibold">Stored Piece</h4>
         <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
+        <h4 className="text-lg font-semibold">Next Piece</h4>
+        <canvas ref={nextPieceCanvasRef} width="80" height="80"></canvas>
       </div>
     </div>
   );
