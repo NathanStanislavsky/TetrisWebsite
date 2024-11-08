@@ -15,7 +15,11 @@ export const Play = () => {
     const canvas = canvasRef.current;
     const storedPieceCanvas = storedPieceCanvasRef.current;
     const nextPieceCanvas = nextPieceCanvasRef.current;
-    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas, nextPieceCanvas);
+    const tetrisGame = new TetrisGame(
+      canvas,
+      storedPieceCanvas,
+      nextPieceCanvas
+    );
     tetrisGameRef.current = tetrisGame;
 
     const gameLoop = (time) => {
@@ -82,22 +86,30 @@ export const Play = () => {
   };
 
   return (
-    <div className="flex items-start justify-center my-6 space-x-8 relative">
-      {/* Game Canvas */}
-      <canvas ref={canvasRef} width="300" height="600" className="border"></canvas>
+    <div className="relative flex justify-center mt-6">
+      <div className="flex flex-row space-x-8 items-start">
+        {/* Game Canvas */}
+        <canvas
+          ref={canvasRef}
+          width="300"
+          height="600"
+          className="border"
+        ></canvas>
 
-      <div className="text-left text-white bg-slate-500 p-10 w-40">
-        <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
-        <h3 className="text-xl mb-4">Level: {level}</h3>
-        <h4 className="text-lg font-semibold">Stored Piece</h4>
-        <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
-        <h4 className="text-lg font-semibold">Next Piece</h4>
-        <canvas ref={nextPieceCanvasRef} width="80" height="80"></canvas>
+        {/* Info Panel */}
+        <div className="text-left text-white bg-slate-500 p-10 w-40">
+          <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
+          <h3 className="text-xl mb-4">Level: {level}</h3>
+          <h4 className="text-lg font-semibold">Stored Piece</h4>
+          <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
+          <h4 className="text-lg font-semibold mt-4">Next Piece</h4>
+          <canvas ref={nextPieceCanvasRef} width="80" height="80"></canvas>
+        </div>
       </div>
 
-      {/* Full-Screen End Game Overlay */}
+      {/* Full-Screen Game Over Overlay */}
       {gameOver && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+        <div className="fixed top-32 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-8">Game Over</h2>
             <button
