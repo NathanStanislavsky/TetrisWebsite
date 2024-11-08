@@ -7,12 +7,12 @@ export default class TetrisGame {
     this.activePiece = this.createPiece();
     this.activePiecePosition = { x: 3, y: 0 };
     this.score = 0;
-    this.dropCounter = 0; // Initialize the drop counter
-    this.dropInterval = 1000; // Move piece down every 1000 ms (1 second)
-    this.lastTime = 0; // Track the last frame time for delta calculation
-    this.score = 0;
-    this.level = 0;
+    this.dropCounter = 0;
+    this.dropInterval = 1000;
+    this.lastTime = 0;
+    this.level = 1;
     this.numLinesCleared = 0;
+    this.linesForNextLevel = 10; // Initial threshold to reach next level
     this.MAX_LEVEL = 30;
   }
 
@@ -191,13 +191,12 @@ export default class TetrisGame {
         this.activePiecePosition = { x: 3, y: 0 };
       }
 
-      // Check level progress after clearing lines
+      // Level up if numLinesCleared reaches linesForNextLevel
       if (
-        this.numLinesCleared % 10 === 0 &&
-        this.numLinesCleared !== 0 &&
+        this.numLinesCleared >= this.linesForNextLevel &&
         this.level < this.MAX_LEVEL
       ) {
-        this.updateLevel(); 
+        this.updateLevel();
       }
 
       this.dropCounter = 0;
@@ -210,8 +209,9 @@ export default class TetrisGame {
 
   updateLevel() {
     this.level += 1;
+    this.linesForNextLevel += 10;
     this.dropInterval = this.calculateGravityInterval(this.level);
-  }
+  } 
 
   rotatePiece() {
     const rotatedPiece = [];
