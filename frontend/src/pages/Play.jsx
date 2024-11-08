@@ -3,23 +3,21 @@ import TetrisGame from "../game/TetrisGame";
 
 export const Play = () => {
   const canvasRef = useRef(null);
+  const storedPieceCanvasRef = useRef(null);
 
-  // State for score and level
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const tetrisGame = new TetrisGame(canvas);
+    const storedPieceCanvas = storedPieceCanvasRef.current;
+    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas);
 
     const gameLoop = (time) => {
       tetrisGame.update(time);
       tetrisGame.render();
-
-      // Update the score and level from the Tetris game instance
       setScore(tetrisGame.score);
       setLevel(tetrisGame.level);
-
       requestAnimationFrame(gameLoop);
     };
 
@@ -37,7 +35,7 @@ export const Play = () => {
         case "ArrowUp":
           tetrisGame.rotatePiece();
           break;
-        case "KeyC":
+        case "KeyC": // Press "C" to store the piece
           tetrisGame.storePiece();
           break;
         default:
@@ -55,17 +53,14 @@ export const Play = () => {
 
   return (
     <div className="flex items-start justify-center my-6 space-x-8">
-      {/* Game Canvas */}
-      <canvas
-        ref={canvasRef}
-        width="300"
-        height="600"
-        className="border"
-      ></canvas>
+      <canvas ref={canvasRef} width="300" height="600" className="border"></canvas>
 
       <div className="text-left text-white bg-slate-500 p-10 w-40">
         <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
-        <h3 className="text-xl">Level: {level}</h3>
+        <h3 className="text-xl mb-4">Level: {level}</h3>
+
+        <h4 className="text-xl">Stored Piece:</h4>
+        <canvas ref={storedPieceCanvasRef} width="90" height="90" className="border mt-2"></canvas>
       </div>
     </div>
   );
