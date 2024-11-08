@@ -141,7 +141,7 @@ export default class TetrisGame {
       const blockSize = 20;
       const nextPieceShape = this.nextPiece.shape;
       const pieceColor = this.getPieceColor(this.nextPiece.type);
-
+  
       this.nextPieceContext.clearRect(
         0,
         0,
@@ -149,9 +149,9 @@ export default class TetrisGame {
         this.nextPieceCanvas.height
       );
       this.nextPieceContext.fillStyle = pieceColor;
-
-      for (let row = 0; row < this.nextPiece.length; row++) {
-        for (let col = 0; col < this.nextPiece[row].length; col++) {
+  
+      for (let row = 0; row < nextPieceShape.length; row++) {
+        for (let col = 0; col < nextPieceShape[row].length; col++) {
           if (nextPieceShape[row][col] !== 0) {
             this.nextPieceContext.fillRect(
               col * blockSize,
