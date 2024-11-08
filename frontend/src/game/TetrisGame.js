@@ -1,10 +1,13 @@
 import { TETRIS_PIECES } from "./tetrisPieces.js";
 export default class TetrisGame {
-  constructor(canvas, storedPieceCanvas) {
+  constructor(canvas, storedPieceCanvas, nextPieceCanvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
     this.storedPieceCanvas = storedPieceCanvas;
     this.storedPieceContext = storedPieceCanvas.getContext("2d");
+
+    this.nextPieceCanvas = nextPieceCanvas;
+    this.nextPieceContext = nextPieceCanvas.getContext("2d");
 
     this.grid = this.createGrid(20, 10);
     this.activePiece = this.createPiece();
@@ -19,6 +22,8 @@ export default class TetrisGame {
     this.MAX_LEVEL = 30;
     this.storedPiece = null;
     this.storedAPiece = false;
+
+    this.nextPiece = this.createPiece();
   }
 
   createGrid(rows, cols) {
@@ -39,6 +44,11 @@ export default class TetrisGame {
     };
   }
 
+  newNextPiece() {
+    this.nextPiece = this.createPiece();
+    this.drawNextPiece();
+  }
+
   storePiece() {
     if (this.storedAPiece) {
       return;
@@ -47,7 +57,8 @@ export default class TetrisGame {
       
       if (this.storedPiece == null) {
         this.storedPiece = this.activePiece;
-        this.activePiece = this.createPiece();
+        this.activePiece = this.nextPiece;
+        this.newNextPiece();
       } else {
         const temp = this.activePiece;
         this.activePiece = this.storedPiece;
@@ -114,6 +125,35 @@ export default class TetrisGame {
         for (let col = 0; col < storedShape[row].length; col++) {
           if (storedShape[row][col] !== 0) {
             this.storedPieceContext.fillRect(
+              col * blockSize,
+              row * blockSize,
+              blockSize,
+              blockSize
+            );
+          }
+        }
+      }
+    }
+  }
+
+  drawNextPiece() {
+    if (this.nextPiece) {
+      const blockSize = 20;
+      const nextPieceShape = this.nextPiece.shape;
+      const pieceColor = this.getPieceColor(this.nextPiece.type);
+  
+      this.nextPieceContext.clearRect(
+        0,
+        0,
+        this.nextPieceCanvas.width,
+        this.nextPieceCanvas.height
+      );
+      this.nextPieceContext.fillStyle = pieceColor;
+  
+      for (let row = 0; row < nextPieceShape.length; row++) {
+        for (let col = 0; col < nextPieceShape[row].length; col++) {
+          if (nextPieceShape[row][col] !== 0) {
+            this.nextPieceContext.fillRect(
               col * blockSize,
               row * blockSize,
               blockSize,
@@ -246,7 +286,8 @@ export default class TetrisGame {
         }
 
         // Create a new piece and reset position
-        this.activePiece = this.createPiece();
+        this.activePiece = this.nextPiece;
+        this.newNextPiece();
         this.activePiecePosition = { x: 3, y: 0 };
       }
 
@@ -290,6 +331,7 @@ export default class TetrisGame {
     this.drawGrid();
     this.drawPiece();
     this.drawStoredPiece();
+    this.drawNextPiece();
   }
 
   getFilledRow(row) {
