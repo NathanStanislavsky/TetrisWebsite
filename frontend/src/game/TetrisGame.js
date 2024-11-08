@@ -24,6 +24,7 @@ export default class TetrisGame {
     this.storedAPiece = false;
 
     this.nextPiece = this.createPiece();
+    this.endGame = false;
   }
 
   update(time = 0) {
@@ -149,6 +150,10 @@ export default class TetrisGame {
     if (this.isGameOver()) {
       this.endGame();
     }
+  }
+
+  endGame() {
+    this.endGame = true;
   }
 
   storePiece() {
