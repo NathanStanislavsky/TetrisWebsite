@@ -391,7 +391,7 @@ export default class TetrisGame {
     const ghostPosition = this.getPseudoPosition();
     const blockSize = 30;
   
-    this.context.globalAlpha = 0.4;
+    this.context.globalAlpha = 0.6;
   
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
