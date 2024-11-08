@@ -35,6 +35,17 @@ export default class TetrisGame {
     };
   }
 
+  storePiece() {
+    if (this.storedPiece == null) {
+      this.storedPiece = this.activePiece;
+      this.activePiece = this.createPiece();
+    } else {
+      let temp = this.activePiece;
+      this.activePiece = this.storedPiece;
+      this.storedPiece = temp;
+    }
+  }
+
   drawPiece() {
     const blockSize = 30;
     const { x, y } = this.activePiecePosition;

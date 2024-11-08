@@ -37,6 +37,9 @@ export const Play = () => {
         case "ArrowUp":
           tetrisGame.rotatePiece();
           break;
+        case "KeyC":
+          tetrisGame.storePiece();
+          break;
         default:
           break;
       }
