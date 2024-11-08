@@ -20,7 +20,7 @@ export default class TetrisGame {
     this.storedPiece = null;
     this.storedAPiece = false;
 
-    this.nextPiece = null;
+    this.nextPiece = this.createPiece();
   }
 
   createGrid(rows, cols) {
@@ -41,6 +41,10 @@ export default class TetrisGame {
     };
   }
 
+  newNextPiece() {
+    this.nextPiece = this.createPiece();
+  }
+
   storePiece() {
     if (this.storedAPiece) {
       return;
@@ -49,7 +53,8 @@ export default class TetrisGame {
       
       if (this.storedPiece == null) {
         this.storedPiece = this.activePiece;
-        this.activePiece = this.createPiece();
+        this.activePiece = this.nextPiece;
+        this.newNextPiece();
       } else {
         const temp = this.activePiece;
         this.activePiece = this.storedPiece;
@@ -248,7 +253,8 @@ export default class TetrisGame {
         }
 
         // Create a new piece and reset position
-        this.activePiece = this.createPiece();
+        this.activePiece = this.nextPiece;
+        this.newNextPiece();
         this.activePiecePosition = { x: 3, y: 0 };
       }
 
