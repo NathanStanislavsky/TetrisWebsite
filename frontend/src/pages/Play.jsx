@@ -39,7 +39,6 @@ export const Play = () => {
           break;
         case "Shift":
           tetrisGame.storePiece();
-          console.log(tetrisGame.storedPiece);
           break;
         default:
           break;
@@ -64,7 +63,7 @@ export const Play = () => {
         <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
         <h3 className="text-xl mb-4">Level: {level}</h3>
         <h4 className="text-lg font-semibold">Stored Piece</h4>
-        <canvas ref={storedPieceCanvasRef} width="80" height="80" className="border"></canvas>
+        <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
       </div>
     </div>
   );
