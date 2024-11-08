@@ -81,6 +81,7 @@ export default class TetrisGame {
   render() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid();
+    this.drawGhostPiece();
     this.drawPiece();
     this.drawStoredPiece();
     this.drawNextPiece();
@@ -102,6 +103,16 @@ export default class TetrisGame {
       shape: TETRIS_PIECES[randomPiece],
       type: randomPiece,
     };
+  }
+
+  getPseudoPosition() {
+    let pseudoPosition = { x: this.activePiecePosition.x, y: this.activePiecePosition.y };
+
+    while (!this.checkCollision(this.activePiece.shape, { x: pseudoPosition.x, y: pseudoPosition.y + 1 })) {
+      pseudoPosition.y += 1;
+    }
+  
+    return pseudoPosition;
   }
 
   newNextPiece() {
@@ -374,5 +385,28 @@ export default class TetrisGame {
         );
       }
     }
+  }
+
+  drawGhostPiece() {
+    const ghostPosition = this.getPseudoPosition();
+    const blockSize = 30;
+  
+    this.context.globalAlpha = 0.4;
+  
+    for (let row = 0; row < this.activePiece.shape.length; row++) {
+      for (let col = 0; col < this.activePiece.shape[row].length; col++) {
+        if (this.activePiece.shape[row][col] !== 0) {
+          this.context.fillStyle = this.getPieceColor(this.activePiece.type);
+          this.context.fillRect(
+            (ghostPosition.x + col) * blockSize,
+            (ghostPosition.y + row) * blockSize,
+            blockSize,
+            blockSize
+          );
+        }
+      }
+    }
+  
+    this.context.globalAlpha = 1.0;
   }
 }
