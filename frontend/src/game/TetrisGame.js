@@ -89,19 +89,19 @@ export default class TetrisGame {
 
   isGameOver() {
     for (let row = 0; row < this.activePiece.shape.length; row++) {
-        for (let col = 0; col < this.activePiece.shape[row].length; col++) {
-            if (this.activePiece.shape[row][col] !== 0) {
-                const targetY = this.activePiecePosition.y + row;
-                const targetX = this.activePiecePosition.x + col;
-              
-                if (this.grid[targetY][targetX].value !== 0) {
-                    return true;
-                }
-            }
+      for (let col = 0; col < this.activePiece.shape[row].length; col++) {
+        if (this.activePiece.shape[row][col] !== 0) {
+          const targetY = this.activePiecePosition.y + row;
+          const targetX = this.activePiecePosition.x + col;
+
+          if (this.grid[targetY][targetX].value !== 0) {
+            return true;
+          }
         }
+      }
     }
     return false;
-}
+  }
 
   createGrid(rows, cols) {
     const grid = [];
@@ -142,14 +142,14 @@ export default class TetrisGame {
   newNextPiece() {
     this.nextPiece = this.createPiece();
     this.drawNextPiece();
-    
+
     this.activePiece = this.nextPiece;
     this.activePiecePosition = { x: 3, y: 0 };
 
     if (this.isGameOver()) {
-        this.endGame();
+      this.endGame();
     }
-}
+  }
 
   storePiece() {
     if (this.storedAPiece) {
