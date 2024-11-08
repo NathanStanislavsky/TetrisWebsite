@@ -1,8 +1,11 @@
 import { TETRIS_PIECES } from "./tetrisPieces.js";
 export default class TetrisGame {
-  constructor(canvas) {
+  constructor(canvas, storedPieceCanvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
+    this.storedPieceCanvas = storedPieceCanvas;
+    this.storedPieceContext = storedPieceCanvas.getContext("2d");
+
     this.grid = this.createGrid(20, 10);
     this.activePiece = this.createPiece();
     this.activePiecePosition = { x: 3, y: 0 };
@@ -14,6 +17,8 @@ export default class TetrisGame {
     this.numLinesCleared = 0;
     this.linesForNextLevel = 10; // Initial threshold to reach next level
     this.MAX_LEVEL = 30;
+    this.storedPiece = null;
+    this.storedAPiece = false;
   }
 
   createGrid(rows, cols) {
@@ -32,6 +37,29 @@ export default class TetrisGame {
       shape: TETRIS_PIECES[randomPiece], // The actual piece shape (2D array)
       type: randomPiece, // (e.g., "I", "T", "L")
     };
+  }
+
+  storePiece() {
+    if (this.storedAPiece) {
+      return;
+    } else {
+      this.storedAPiece = true;
+      
+      if (this.storedPiece == null) {
+        this.storedPiece = this.activePiece;
+        this.activePiece = this.createPiece();
+      } else {
+        const temp = this.activePiece;
+        this.activePiece = this.storedPiece;
+        this.storedPiece = temp;
+
+        this.activePiecePosition = { x: 3, y: 0 };
+
+        if (!this.checkCollision(this.activePiece.shape, this.activePiecePosition)) {
+          this.drawStoredPiece();
+        }
+      }
+    }
   }
 
   drawPiece() {
@@ -63,6 +91,35 @@ export default class TetrisGame {
             blockSize,
             blockSize
           );
+        }
+      }
+    }
+  }
+
+  drawStoredPiece() {
+    if (this.storedPiece) {
+      const blockSize = 20;
+      const storedShape = this.storedPiece.shape;
+      const pieceColor = this.getPieceColor(this.storedPiece.type);
+
+      this.storedPieceContext.clearRect(
+        0,
+        0,
+        this.storedPieceCanvas.width,
+        this.storedPieceCanvas.height
+      );
+      this.storedPieceContext.fillStyle = pieceColor;
+
+      for (let row = 0; row < storedShape.length; row++) {
+        for (let col = 0; col < storedShape[row].length; col++) {
+          if (storedShape[row][col] !== 0) {
+            this.storedPieceContext.fillRect(
+              col * blockSize,
+              row * blockSize,
+              blockSize,
+              blockSize
+            );
+          }
         }
       }
     }
@@ -116,6 +173,8 @@ export default class TetrisGame {
         }
       }
     }
+
+    this.storedAPiece = false;
   }
 
   moveLeft() {
@@ -211,7 +270,7 @@ export default class TetrisGame {
     this.level += 1;
     this.linesForNextLevel += 10;
     this.dropInterval = this.calculateGravityInterval(this.level);
-  } 
+  }
 
   rotatePiece() {
     const rotatedPiece = [];
@@ -230,6 +289,7 @@ export default class TetrisGame {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid();
     this.drawPiece();
+    this.drawStoredPiece();
   }
 
   getFilledRow(row) {
