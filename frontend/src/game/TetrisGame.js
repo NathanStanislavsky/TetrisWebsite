@@ -14,6 +14,7 @@ export default class TetrisGame {
     this.numLinesCleared = 0;
     this.linesForNextLevel = 10; // Initial threshold to reach next level
     this.MAX_LEVEL = 30;
+    this.storedPiece = null;
   }
 
   createGrid(rows, cols) {
