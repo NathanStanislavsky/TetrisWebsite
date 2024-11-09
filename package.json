@@ -2,7 +2,7 @@
   "name": "TetrisWebsite",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://username.github.io/repository-name",
+  "homepage": "https://NathanStanislavsky.github.io/TetrisWebsite",
   "dependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
