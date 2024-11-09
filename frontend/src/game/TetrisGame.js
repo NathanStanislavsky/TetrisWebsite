@@ -63,7 +63,6 @@ export default class TetrisGame {
 
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
         this.activePiecePosition.y += 1;
-        this.printGrid();
       } else {
         this.lockPiece();
 
