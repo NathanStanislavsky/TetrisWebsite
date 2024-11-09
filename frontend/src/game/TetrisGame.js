@@ -24,7 +24,6 @@ export default class TetrisGame {
     this.storedAPiece = false;
 
     this.nextPiece = this.createPiece();
-    this.endGame = false;
   }
 
   update(time = 0) {
@@ -88,22 +87,6 @@ export default class TetrisGame {
     this.drawNextPiece();
   }
 
-  isGameOver() {
-    for (let row = 0; row < this.activePiece.shape.length; row++) {
-      for (let col = 0; col < this.activePiece.shape[row].length; col++) {
-        if (this.activePiece.shape[row][col] !== 0) {
-          const targetY = this.activePiecePosition.y + row;
-          const targetX = this.activePiecePosition.x + col;
-
-          if (this.grid[targetY][targetX].value !== 0) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
   createGrid(rows, cols) {
     const grid = [];
     for (let row = 0; row < rows; row++) {
@@ -123,46 +106,18 @@ export default class TetrisGame {
   }
 
   getPseudoPosition() {
-    let pseudoPosition = {
-      x: this.activePiecePosition.x,
-      y: this.activePiecePosition.y,
-    };
+    let pseudoPosition = { x: this.activePiecePosition.x, y: this.activePiecePosition.y };
 
-    while (
-      !this.checkCollision(this.activePiece.shape, {
-        x: pseudoPosition.x,
-        y: pseudoPosition.y + 1,
-      })
-    ) {
+    while (!this.checkCollision(this.activePiece.shape, { x: pseudoPosition.x, y: pseudoPosition.y + 1 })) {
       pseudoPosition.y += 1;
     }
-
+  
     return pseudoPosition;
   }
 
   newNextPiece() {
     this.nextPiece = this.createPiece();
     this.drawNextPiece();
-
-    this.activePiece = this.nextPiece;
-    this.activePiecePosition = { x: 3, y: 0 };
-
-    if (this.isGameOver()) {
-      this.endGame = true;
-    }
-  }
-
-
-  setGameOver(value) {
-    this.endGame = value;
-  }
-
-  setScore(value) {
-    this.score = value;
-  }
-
-  setLevel(value) {
-    this.level = value;
   }
 
   storePiece() {
@@ -170,7 +125,7 @@ export default class TetrisGame {
       return;
     } else {
       this.storedAPiece = true;
-
+      
       if (this.storedPiece == null) {
         this.storedPiece = this.activePiece;
         this.activePiece = this.nextPiece;
@@ -182,9 +137,7 @@ export default class TetrisGame {
 
         this.activePiecePosition = { x: 3, y: 0 };
 
-        if (
-          !this.checkCollision(this.activePiece.shape, this.activePiecePosition)
-        ) {
+        if (!this.checkCollision(this.activePiece.shape, this.activePiecePosition)) {
           this.drawStoredPiece();
         }
       }
@@ -247,9 +200,9 @@ export default class TetrisGame {
           const newX = position.x + col;
           if (
             newY >= this.grid.length ||
-            newX < 0 ||
-            newX >= this.grid[0].length ||
-            this.grid[newY][newX].value !== 0
+            newX < 0 || 
+            newX >= this.grid[0].length || 
+            this.grid[newY][newX].value !== 0 
           ) {
             return true;
           }
@@ -265,7 +218,7 @@ export default class TetrisGame {
       y: this.activePiecePosition.y,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x -= 1;
+      this.activePiecePosition.x -= 1; 
     }
   }
 
@@ -275,7 +228,7 @@ export default class TetrisGame {
       y: this.activePiecePosition.y,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x += 1;
+      this.activePiecePosition.x += 1; 
     }
   }
 
@@ -298,23 +251,23 @@ export default class TetrisGame {
       y: this.activePiecePosition.y + 1,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.y += 1;
+      this.activePiecePosition.y += 1; 
       this.score += 1;
     }
   }
 
   hardDrop() {
     const ghostPosition = this.getPseudoPosition();
-
+    
     this.activePiecePosition = ghostPosition;
-
+    
     this.score += (ghostPosition.y - this.activePiecePosition.y) * 2; // hard drop bonus points
 
     this.lockPiece();
-  }
+}
 
   lockPiece() {
-    const pieceColor = this.getPieceColor(this.activePiece.type);
+    const pieceColor = this.getPieceColor(this.activePiece.type); 
 
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
@@ -323,7 +276,7 @@ export default class TetrisGame {
             this.activePiecePosition.x + col
           ] = {
             value: 1,
-            color: pieceColor,
+            color: pieceColor, 
           };
         }
       }
@@ -400,7 +353,7 @@ export default class TetrisGame {
       const blockSize = 20;
       const nextPieceShape = this.nextPiece.shape;
       const pieceColor = this.getPieceColor(this.nextPiece.type);
-
+  
       this.nextPieceContext.clearRect(
         0,
         0,
@@ -408,7 +361,7 @@ export default class TetrisGame {
         this.nextPieceCanvas.height
       );
       this.nextPieceContext.fillStyle = pieceColor;
-
+  
       for (let row = 0; row < nextPieceShape.length; row++) {
         for (let col = 0; col < nextPieceShape[row].length; col++) {
           if (nextPieceShape[row][col] !== 0) {
@@ -447,9 +400,9 @@ export default class TetrisGame {
   drawGhostPiece() {
     const ghostPosition = this.getPseudoPosition();
     const blockSize = 30;
-
+  
     this.context.globalAlpha = 0.6;
-
+  
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
         if (this.activePiece.shape[row][col] !== 0) {
@@ -463,7 +416,7 @@ export default class TetrisGame {
         }
       }
     }
-
+  
     this.context.globalAlpha = 1.0;
   }
 }
