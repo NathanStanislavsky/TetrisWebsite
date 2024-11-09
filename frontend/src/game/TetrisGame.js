@@ -30,6 +30,24 @@ export default class TetrisGame {
     this.gameOver = false;
   }
 
+  resetGame() {
+    this.grid = this.createGrid(20, 10);
+    this.activePiece = this.createPiece();
+    this.activePiecePosition = { x: 3, y: 0 };
+    this.score = 0;
+    this.dropCounter = 0;
+    this.dropInterval = 1000;
+    this.lastTime = 0;
+    this.level = 1;
+    this.numLinesCleared = 0;
+    this.linesForNextLevel = 10;
+    this.MAX_LEVEL = 30;
+    this.storedPiece = null;
+    this.storedAPiece = false;
+    this.nextPiece = this.createPiece();
+    this.gameOver = false;
+  }
+
   update(time = 0) {
     if (this.gameOver) return;
 
