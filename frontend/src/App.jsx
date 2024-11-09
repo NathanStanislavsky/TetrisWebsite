@@ -4,18 +4,21 @@ import Leaderboard from './pages/Leaderboard';
 import Play from './pages/Play';
 import Navbar from './components/Navbar';
 
+import tetrisBackground from './assets/tetrisBackground.webp';
+
 const App = () => {
   return (
-    <div className="App"
-    style={{
-      backgroundImage: `url('/TetrisWebsite/tetrisBackground.webp')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      minHeight: '100vh',
-    }}
+    <div
+      className="App"
+      style={{
+        backgroundImage: `url(${tetrisBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+      }}
     >
-      <BrowserRouter>
+      <BrowserRouter basename="/TetrisWebsite">
         <Navbar />
         <div className="pages">
           <Routes>
