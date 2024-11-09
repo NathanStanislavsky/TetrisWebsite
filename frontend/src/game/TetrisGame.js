@@ -1,4 +1,5 @@
 import { TETRIS_PIECES } from "./tetrisPieces.js";
+
 export default class TetrisGame {
   constructor(canvas, storedPieceCanvas, nextPieceCanvas) {
     this.canvas = canvas;
@@ -63,7 +64,8 @@ export default class TetrisGame {
         }
 
         this.activePiece = this.nextPiece;
-        this.newNextPiece();
+        this.nextPiece = this.createPiece();
+        this.drawNextPiece();
         this.activePiecePosition = { x: 3, y: 0 };
       }
 
@@ -123,11 +125,6 @@ export default class TetrisGame {
     return pseudoPosition;
   }
 
-  newNextPiece() {
-    this.nextPiece = this.createPiece();
-    this.drawNextPiece();
-  }
-
   storePiece() {
     if (this.storedAPiece) {
       return;
@@ -137,7 +134,8 @@ export default class TetrisGame {
       if (this.storedPiece == null) {
         this.storedPiece = this.activePiece;
         this.activePiece = this.nextPiece;
-        this.newNextPiece();
+        this.nextPiece = this.createPiece();
+        this.drawNextPiece();
       } else {
         const temp = this.activePiece;
         this.activePiece = this.storedPiece;
