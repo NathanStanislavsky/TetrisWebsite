@@ -3,7 +3,7 @@ import TetrisGame from "../game/TetrisGame";
 
 export const Play = () => {
   const canvasRef = useRef(null);
-  const storedPieceCanvasRef = useRef(null); // Reference for stored piece canvas
+  const storedPieceCanvasRef = useRef(null);
   const nextPieceCanvasRef = useRef(null);
 
   const [score, setScore] = useState(0);
@@ -13,7 +13,9 @@ export const Play = () => {
     const canvas = canvasRef.current;
     const storedPieceCanvas = storedPieceCanvasRef.current;
     const nextPieceCanvas = nextPieceCanvasRef.current;
-    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas, nextPieceCanvas); // Pass both canvases
+    const tetrisGame = new TetrisGame(canvas, storedPieceCanvas, nextPieceCanvas);
+
+    let animationFrameId; // Store the ID to cancel later
 
     const gameLoop = (time) => {
       tetrisGame.update(time);
@@ -22,7 +24,7 @@ export const Play = () => {
       setScore(tetrisGame.score);
       setLevel(tetrisGame.level);
 
-      requestAnimationFrame(gameLoop);
+      animationFrameId = requestAnimationFrame(gameLoop);
     };
 
     const handleKeyDown = (event) => {
@@ -51,10 +53,12 @@ export const Play = () => {
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    requestAnimationFrame(gameLoop);
+    animationFrameId = requestAnimationFrame(gameLoop);
 
+    // Cleanup function
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      cancelAnimationFrame(animationFrameId); // Stop the game loop
     };
   }, []);
 
