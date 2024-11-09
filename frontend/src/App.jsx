@@ -8,7 +8,7 @@ const App = () => {
   return (
     <div className="App"
     style={{
-      backgroundImage: `url('../tetrisBackground.webp')`,  // Path to your image
+      backgroundImage: `url('/TetrisWebsite/tetrisBackground.webp')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
