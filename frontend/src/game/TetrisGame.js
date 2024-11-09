@@ -1,8 +1,10 @@
 import { TETRIS_PIECES } from "./tetrisPieces.js";
+
 export default class TetrisGame {
   constructor(canvas, storedPieceCanvas, nextPieceCanvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
+    
     this.storedPieceCanvas = storedPieceCanvas;
     this.storedPieceContext = storedPieceCanvas.getContext("2d");
 
@@ -24,9 +26,31 @@ export default class TetrisGame {
     this.storedAPiece = false;
 
     this.nextPiece = this.createPiece();
+
+    this.gameOver = false;
+  }
+
+  resetGame() {
+    this.grid = this.createGrid(20, 10);
+    this.activePiece = this.createPiece();
+    this.activePiecePosition = { x: 3, y: 0 };
+    this.score = 0;
+    this.dropCounter = 0;
+    this.dropInterval = 1000;
+    this.lastTime = 0;
+    this.level = 1;
+    this.numLinesCleared = 0;
+    this.linesForNextLevel = 10;
+    this.MAX_LEVEL = 30;
+    this.storedPiece = null;
+    this.storedAPiece = false;
+    this.nextPiece = this.createPiece();
+    this.gameOver = false;
   }
 
   update(time = 0) {
+    if (this.gameOver) return;
+
     const deltaTime = time - this.lastTime;
     this.lastTime = time;
     this.dropCounter += deltaTime;
@@ -39,16 +63,38 @@ export default class TetrisGame {
 
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
         this.activePiecePosition.y += 1;
+        this.printGrid();
       } else {
         this.lockPiece();
 
+        // Update the active piece and position
+        this.activePiece = this.nextPiece;
+        this.nextPiece = this.createPiece();
+        this.drawNextPiece();
+        this.activePiecePosition = { x: 3, y: 0 };
+
+        if (
+          this.checkGameOver(this.activePiece.shape, this.activePiecePosition)
+        ) {
+          console.log("Game Over triggered"); // For debugging
+          console.log("Grid state before game over:");
+          // this.printGrid();
+          this.gameOver = true;
+          console.log(this.gameOver);
+          return;
+        }
+
         let linesClearedTempCount = 0;
-        for (let row = this.grid.length - 1; row >= 0; row--) {
+
+        // Fixed loop for clearing filled lines
+        for (let row = this.grid.length - 1; row >= 0; ) {
           if (this.getFilledRow(row)) {
             this.clearLine(row);
-            row++;
             this.numLinesCleared += 1;
             linesClearedTempCount += 1;
+            // Do not decrement row here; check the same row again after lines shift down
+          } else {
+            row--; // Only decrement if no line was cleared at this row
           }
         }
 
@@ -61,10 +107,6 @@ export default class TetrisGame {
         } else if (linesClearedTempCount === 4) {
           this.score += 1200 * (this.level + 1);
         }
-
-        this.activePiece = this.nextPiece;
-        this.newNextPiece();
-        this.activePiecePosition = { x: 3, y: 0 };
       }
 
       if (
@@ -76,6 +118,68 @@ export default class TetrisGame {
 
       this.dropCounter = 0;
     }
+
+    this.render();
+  }
+
+  printGrid() {
+  // Create a deep copy of the grid to avoid modifying the original grid
+  const gridCopy = this.grid.map(row => row.map(cell => cell.value));
+
+  const { x: pieceX, y: pieceY } = this.activePiecePosition;
+  const shape = this.activePiece.shape;
+
+  // Overlay the active piece onto the grid copy
+  for (let row = 0; row < shape.length; row++) {
+    for (let col = 0; col < shape[row].length; col++) {
+      if (shape[row][col] !== 0) {
+        const gridX = pieceX + col;
+        const gridY = pieceY + row;
+
+        // Check boundaries to prevent errors
+        if (
+          gridY >= 0 && gridY < gridCopy.length &&
+          gridX >= 0 && gridX < gridCopy[0].length
+        ) {
+          gridCopy[gridY][gridX] = shape[row][col];
+        }
+      }
+    }
+  }
+
+  // Define a function to get a display character for each cell
+  const getDisplayChar = (cellValue) => {
+    if (cellValue === 0) return ' ';
+    else return 'X'; // You can use different characters if you prefer
+  };
+
+  // Print the grid copy with the active piece included, replacing zeros with spaces
+  console.log(
+    gridCopy.map(row => row.map(cell => getDisplayChar(cell)).join(' ')).join('\n')
+  );
+}
+
+  checkGameOver(piece, position) {
+    for (let row = 0; row < piece.length; row++) {
+      for (let col = 0; col < piece[row].length; col++) {
+        if (piece[row][col] !== 0) {
+          const newY = position.y + row;
+          const newX = position.x + col;
+          if (
+            newX < 0 ||
+            newX >= this.grid[0].length ||
+            newY >= this.grid.length ||
+            (newY >= 0 && this.grid[newY][newX].value !== 0)
+          ) {
+            console.log(
+              `Collision at (${newY}, ${newX}) during game over check.`
+            );
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   render() {
@@ -90,7 +194,11 @@ export default class TetrisGame {
   createGrid(rows, cols) {
     const grid = [];
     for (let row = 0; row < rows; row++) {
-      grid.push(new Array(cols).fill({ value: 0, color: "black" }));
+      const newRow = [];
+      for (let col = 0; col < cols; col++) {
+        newRow.push({ value: 0, color: "black" });
+      }
+      grid.push(newRow);
     }
     return grid;
   }
@@ -106,18 +214,21 @@ export default class TetrisGame {
   }
 
   getPseudoPosition() {
-    let pseudoPosition = { x: this.activePiecePosition.x, y: this.activePiecePosition.y };
+    let pseudoPosition = {
+      x: this.activePiecePosition.x,
+      y: this.activePiecePosition.y,
+    };
 
-    while (!this.checkCollision(this.activePiece.shape, { x: pseudoPosition.x, y: pseudoPosition.y + 1 })) {
+    while (
+      !this.checkCollision(this.activePiece.shape, {
+        x: pseudoPosition.x,
+        y: pseudoPosition.y + 1,
+      })
+    ) {
       pseudoPosition.y += 1;
     }
-  
-    return pseudoPosition;
-  }
 
-  newNextPiece() {
-    this.nextPiece = this.createPiece();
-    this.drawNextPiece();
+    return pseudoPosition;
   }
 
   storePiece() {
@@ -125,11 +236,13 @@ export default class TetrisGame {
       return;
     } else {
       this.storedAPiece = true;
-      
+
       if (this.storedPiece == null) {
         this.storedPiece = this.activePiece;
         this.activePiece = this.nextPiece;
-        this.newNextPiece();
+        this.nextPiece = this.createPiece();
+        this.drawNextPiece();
+        this.activePiecePosition = { x: 3, y: 0 };
       } else {
         const temp = this.activePiece;
         this.activePiece = this.storedPiece;
@@ -137,7 +250,9 @@ export default class TetrisGame {
 
         this.activePiecePosition = { x: 3, y: 0 };
 
-        if (!this.checkCollision(this.activePiece.shape, this.activePiecePosition)) {
+        if (
+          !this.checkCollision(this.activePiece.shape, this.activePiecePosition)
+        ) {
           this.drawStoredPiece();
         }
       }
@@ -177,16 +292,19 @@ export default class TetrisGame {
   }
 
   clearLine(row) {
+    // Clear the filled line
     for (let col = 0; col < this.grid[row].length; col++) {
       this.grid[row][col] = { value: 0, color: "black" };
     }
 
+    // Shift all rows above down by one
     for (let r = row; r > 0; r--) {
       for (let col = 0; col < this.grid[r].length; col++) {
         this.grid[r][col] = { ...this.grid[r - 1][col] };
       }
     }
 
+    // Clear the top row
     for (let col = 0; col < this.grid[0].length; col++) {
       this.grid[0][col] = { value: 0, color: "black" };
     }
@@ -199,10 +317,10 @@ export default class TetrisGame {
           const newY = position.y + row;
           const newX = position.x + col;
           if (
+            newX < 0 ||
+            newX >= this.grid[0].length ||
             newY >= this.grid.length ||
-            newX < 0 || 
-            newX >= this.grid[0].length || 
-            this.grid[newY][newX].value !== 0 
+            (newY >= 0 && this.grid[newY][newX].value !== 0)
           ) {
             return true;
           }
@@ -218,7 +336,7 @@ export default class TetrisGame {
       y: this.activePiecePosition.y,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x -= 1; 
+      this.activePiecePosition.x -= 1;
     }
   }
 
@@ -228,20 +346,35 @@ export default class TetrisGame {
       y: this.activePiecePosition.y,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x += 1; 
+      this.activePiecePosition.x += 1;
     }
   }
 
   rotatePiece() {
     const rotatedPiece = [];
-
     for (let col = 0; col < this.activePiece.shape[0].length; col++) {
       const newRow = this.activePiece.shape.map((row) => row[col]).reverse();
       rotatedPiece.push(newRow);
     }
 
+    const originalX = this.activePiecePosition.x;
+    const originalY = this.activePiecePosition.y;
+
+    // Try rotating at current position
     if (!this.checkCollision(rotatedPiece, this.activePiecePosition)) {
       this.activePiece.shape = rotatedPiece;
+      return;
+    }
+
+    // Try shifting left or right if collision occurs
+    const shifts = [-1, 1, -2, 2];
+    for (let shift of shifts) {
+      const newPos = { x: originalX + shift, y: originalY };
+      if (!this.checkCollision(rotatedPiece, newPos)) {
+        this.activePiecePosition.x += shift;
+        this.activePiece.shape = rotatedPiece;
+        return;
+      }
     }
   }
 
@@ -251,33 +384,41 @@ export default class TetrisGame {
       y: this.activePiecePosition.y + 1,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.y += 1; 
+      this.activePiecePosition.y += 1;
       this.score += 1;
     }
   }
 
   hardDrop() {
+    const startY = this.activePiecePosition.y;
     const ghostPosition = this.getPseudoPosition();
-    
     this.activePiecePosition = ghostPosition;
-    
-    this.score += (ghostPosition.y - this.activePiecePosition.y) * 2; // hard drop bonus points
-
+    this.score += (ghostPosition.y - startY) * 2; // hard drop bonus points
     this.lockPiece();
-}
+  }
 
   lockPiece() {
-    const pieceColor = this.getPieceColor(this.activePiece.type); 
+    const pieceColor = this.getPieceColor(this.activePiece.type);
 
+    // Lock the current piece into the grid
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
         if (this.activePiece.shape[row][col] !== 0) {
-          this.grid[this.activePiecePosition.y + row][
-            this.activePiecePosition.x + col
-          ] = {
-            value: 1,
-            color: pieceColor, 
-          };
+          const gridY = this.activePiecePosition.y + row;
+          const gridX = this.activePiecePosition.x + col;
+
+          // Check if gridY and gridX are within the grid bounds
+          if (
+            gridY >= 0 &&
+            gridY < this.grid.length &&
+            gridX >= 0 &&
+            gridX < this.grid[0].length
+          ) {
+            this.grid[gridY][gridX] = {
+              value: 1,
+              color: pieceColor,
+            };
+          }
         }
       }
     }
@@ -292,28 +433,15 @@ export default class TetrisGame {
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
         if (this.activePiece.shape[row][col] !== 0) {
-          if (this.activePiece.type === "I") {
-            this.context.fillStyle = "cyan";
-          } else if (this.activePiece.type === "T") {
-            this.context.fillStyle = "purple";
-          } else if (this.activePiece.type === "O") {
-            this.context.fillStyle = "yellow";
-          } else if (this.activePiece.type === "S") {
-            this.context.fillStyle = "red";
-          } else if (this.activePiece.type === "Z") {
-            this.context.fillStyle = "green";
-          } else if (this.activePiece.type === "L") {
-            this.context.fillStyle = "orange";
-          } else if (this.activePiece.type === "J") {
-            this.context.fillStyle = "pink";
-          }
+          this.context.fillStyle = this.getPieceColor(this.activePiece.type);
 
-          this.context.fillRect(
-            (x + col) * blockSize,
-            (y + row) * blockSize,
-            blockSize,
-            blockSize
-          );
+          const drawX = (x + col) * blockSize;
+          const drawY = (y + row) * blockSize;
+
+          // Only draw if the block is within the visible canvas
+          if (drawY >= 0) {
+            this.context.fillRect(drawX, drawY, blockSize, blockSize);
+          }
         }
       }
     }
@@ -353,7 +481,7 @@ export default class TetrisGame {
       const blockSize = 20;
       const nextPieceShape = this.nextPiece.shape;
       const pieceColor = this.getPieceColor(this.nextPiece.type);
-  
+
       this.nextPieceContext.clearRect(
         0,
         0,
@@ -361,7 +489,7 @@ export default class TetrisGame {
         this.nextPieceCanvas.height
       );
       this.nextPieceContext.fillStyle = pieceColor;
-  
+
       for (let row = 0; row < nextPieceShape.length; row++) {
         for (let col = 0; col < nextPieceShape[row].length; col++) {
           if (nextPieceShape[row][col] !== 0) {
@@ -400,9 +528,9 @@ export default class TetrisGame {
   drawGhostPiece() {
     const ghostPosition = this.getPseudoPosition();
     const blockSize = 30;
-  
+
     this.context.globalAlpha = 0.6;
-  
+
     for (let row = 0; row < this.activePiece.shape.length; row++) {
       for (let col = 0; col < this.activePiece.shape[row].length; col++) {
         if (this.activePiece.shape[row][col] !== 0) {
@@ -416,7 +544,7 @@ export default class TetrisGame {
         }
       }
     }
-  
+
     this.context.globalAlpha = 1.0;
   }
 }
