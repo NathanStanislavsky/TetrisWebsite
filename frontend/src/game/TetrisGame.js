@@ -4,6 +4,7 @@ export default class TetrisGame {
   constructor(canvas, storedPieceCanvas, nextPieceCanvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
+    
     this.storedPieceCanvas = storedPieceCanvas;
     this.storedPieceContext = storedPieceCanvas.getContext("2d");
 
@@ -44,6 +45,7 @@ export default class TetrisGame {
 
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
         this.activePiecePosition.y += 1;
+        this.printGrid();
       } else {
         this.lockPiece();
 
@@ -58,7 +60,7 @@ export default class TetrisGame {
         ) {
           console.log("Game Over triggered"); // For debugging
           console.log("Grid state before game over:");
-          this.printGrid();
+          // this.printGrid();
           this.gameOver = true;
           console.log(this.gameOver);
           return;
@@ -98,15 +100,46 @@ export default class TetrisGame {
 
       this.dropCounter = 0;
     }
+
+    this.render();
   }
 
   printGrid() {
-    console.log(
-      this.grid
-        .map((row) => row.map((cell) => cell.value).join(" "))
-        .join("\n")
-    );
+  // Create a deep copy of the grid to avoid modifying the original grid
+  const gridCopy = this.grid.map(row => row.map(cell => cell.value));
+
+  const { x: pieceX, y: pieceY } = this.activePiecePosition;
+  const shape = this.activePiece.shape;
+
+  // Overlay the active piece onto the grid copy
+  for (let row = 0; row < shape.length; row++) {
+    for (let col = 0; col < shape[row].length; col++) {
+      if (shape[row][col] !== 0) {
+        const gridX = pieceX + col;
+        const gridY = pieceY + row;
+
+        // Check boundaries to prevent errors
+        if (
+          gridY >= 0 && gridY < gridCopy.length &&
+          gridX >= 0 && gridX < gridCopy[0].length
+        ) {
+          gridCopy[gridY][gridX] = shape[row][col];
+        }
+      }
+    }
   }
+
+  // Define a function to get a display character for each cell
+  const getDisplayChar = (cellValue) => {
+    if (cellValue === 0) return ' ';
+    else return 'X'; // You can use different characters if you prefer
+  };
+
+  // Print the grid copy with the active piece included, replacing zeros with spaces
+  console.log(
+    gridCopy.map(row => row.map(cell => getDisplayChar(cell)).join(' ')).join('\n')
+  );
+}
 
   checkGameOver(piece, position) {
     for (let row = 0; row < piece.length; row++) {
