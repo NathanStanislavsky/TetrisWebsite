@@ -63,7 +63,6 @@ export default class TetrisGame {
 
       if (!this.checkCollision(this.activePiece.shape, newPos)) {
         this.activePiecePosition.y += 1;
-        this.printGrid();
       } else {
         this.lockPiece();
 
@@ -76,11 +75,7 @@ export default class TetrisGame {
         if (
           this.checkGameOver(this.activePiece.shape, this.activePiecePosition)
         ) {
-          console.log("Game Over triggered"); // For debugging
-          console.log("Grid state before game over:");
-          // this.printGrid();
           this.gameOver = true;
-          console.log(this.gameOver);
           return;
         }
 
@@ -171,9 +166,6 @@ export default class TetrisGame {
             newY >= this.grid.length ||
             (newY >= 0 && this.grid[newY][newX].value !== 0)
           ) {
-            console.log(
-              `Collision at (${newY}, ${newX}) during game over check.`
-            );
             return true;
           }
         }
