@@ -1,15 +1,23 @@
 import TetrisGame from '../../src/game/TetrisGame';
+import { TETRIS_PIECES } from '../../src/game/tetrisPieces';
 
 describe('TetrisGame Movement and Rotation', () => {
   let game;
 
   beforeEach(() => {
-    // Mock canvas elements
+    jest.spyOn(TetrisGame.prototype, 'createPiece').mockReturnValue({
+      shape: TETRIS_PIECES['I'],
+      type: 'I',
+    });
+
     const mockCanvas = document.createElement('canvas');
     const storedPieceCanvas = document.createElement('canvas');
     const nextPieceCanvas = document.createElement('canvas');
-
     game = new TetrisGame(mockCanvas, storedPieceCanvas, nextPieceCanvas);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   test('moveLeft should update position correctly', () => {
@@ -55,7 +63,6 @@ describe('TetrisGame Movement and Rotation', () => {
     const finalY = game.activePiecePosition.y;
     expect(finalY).toBeGreaterThan(initialY);
 
-    // Check if the piece is locked in the grid
     let pieceLocked = false;
     game.grid.forEach(row => {
       row.forEach(cell => {
