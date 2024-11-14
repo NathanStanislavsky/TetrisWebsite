@@ -5,11 +5,6 @@ describe("TetrisGame Line Clearing and Scoring", () => {
   let game;
 
   beforeEach(() => {
-    jest.spyOn(TetrisGame.prototype, "createPiece").mockReturnValue({
-      shape: TETRIS_PIECES["I"],
-      type: "I",
-    });
-
     // Mock canvas elements
     const mockCanvas = document.createElement("canvas");
     const storedPieceCanvas = document.createElement("canvas");

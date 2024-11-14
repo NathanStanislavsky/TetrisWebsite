@@ -4,7 +4,7 @@ export default class TetrisGame {
   constructor(canvas, storedPieceCanvas, nextPieceCanvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
-    
+
     this.storedPieceCanvas = storedPieceCanvas;
     this.storedPieceContext = storedPieceCanvas.getContext("2d");
 
@@ -94,15 +94,9 @@ export default class TetrisGame {
         }
 
         this.updateScore(linesClearedTempCount);
-  
       }
 
-      if (
-        this.numLinesCleared >= this.linesForNextLevel &&
-        this.level < this.MAX_LEVEL
-      ) {
-        this.updateLevel();
-      }
+      this.updateLevel();
 
       this.dropCounter = 0;
     }
@@ -124,37 +118,41 @@ export default class TetrisGame {
 
   printGrid() {
     // Create a deep copy of the grid to avoid modifying the original grid
-    const gridCopy = this.grid.map(row => row.map(cell => cell.value));
-  
+    const gridCopy = this.grid.map((row) => row.map((cell) => cell.value));
+
     const { x: pieceX, y: pieceY } = this.activePiecePosition;
     const shape = this.activePiece.shape;
-  
+
     // Overlay the active piece onto the grid copy
     for (let row = 0; row < shape.length; row++) {
       for (let col = 0; col < shape[row].length; col++) {
         if (shape[row][col] !== 0) {
           const gridX = pieceX + col;
           const gridY = pieceY + row;
-  
+
           // Check boundaries to prevent errors
           if (
-            gridY >= 0 && gridY < gridCopy.length &&
-            gridX >= 0 && gridX < gridCopy[0].length
+            gridY >= 0 &&
+            gridY < gridCopy.length &&
+            gridX >= 0 &&
+            gridX < gridCopy[0].length
           ) {
             gridCopy[gridY][gridX] = shape[row][col];
           }
         }
       }
     }
-  
+
     // Define a function to get a display character for each cell
     const getDisplayChar = (cellValue) => {
-      return cellValue === 0 ? '0' : 'X';
+      return cellValue === 0 ? "0" : "X";
     };
-  
+
     // Print the grid copy with the active piece included, replacing zeros with 0s
     console.log(
-      gridCopy.map(row => row.map(cell => getDisplayChar(cell)).join(' ')).join('\n')
+      gridCopy
+        .map((row) => row.map((cell) => getDisplayChar(cell)).join(" "))
+        .join("\n")
     );
   }
 
@@ -273,9 +271,14 @@ export default class TetrisGame {
   }
 
   updateLevel() {
-    this.level += 1;
-    this.linesForNextLevel += 10;
-    this.dropInterval = this.calculateGravityInterval(this.level);
+    if (
+      this.numLinesCleared >= this.linesForNextLevel &&
+      this.level < this.MAX_LEVEL
+    ) {
+      this.level += 1;
+      this.linesForNextLevel += 10;
+      this.dropInterval = this.calculateGravityInterval(this.level);
+    }
   }
 
   getFilledRow(row) {
