@@ -1,7 +1,7 @@
 import TetrisGame from "../../src/game/TetrisGame";
 import { TETRIS_PIECES } from "../../src/game/tetrisPieces";
 
-describe("TetrisGame Line Clearing and Scoring", () => {
+describe('TetrisGame Line Clearing and Scoring', () => {
   let game;
 
   beforeEach(() => {

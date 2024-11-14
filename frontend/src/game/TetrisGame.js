@@ -93,15 +93,8 @@ export default class TetrisGame {
           }
         }
 
-        if (linesClearedTempCount === 1) {
-          this.score += 40 * (this.level + 1);
-        } else if (linesClearedTempCount === 2) {
-          this.score += 100 * (this.level + 1);
-        } else if (linesClearedTempCount === 3) {
-          this.score += 300 * (this.level + 1);
-        } else if (linesClearedTempCount === 4) {
-          this.score += 1200 * (this.level + 1);
-        }
+        this.updateScore(linesClearedTempCount);
+  
       }
 
       if (
@@ -115,6 +108,18 @@ export default class TetrisGame {
     }
 
     this.render();
+  }
+
+  updateScore(linesCleared) {
+    if (linesCleared === 1) {
+      this.score += 40 * (this.level + 1);
+    } else if (linesCleared === 2) {
+      this.score += 100 * (this.level + 1);
+    } else if (linesCleared === 3) {
+      this.score += 300 * (this.level + 1);
+    } else if (linesCleared === 4) {
+      this.score += 1200 * (this.level + 1);
+    }
   }
 
   printGrid() {
