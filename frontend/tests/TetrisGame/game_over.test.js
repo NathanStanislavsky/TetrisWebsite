@@ -27,8 +27,6 @@ describe('TetrisGame game over', () => {
     // Simulate a block at the spawn position
     game.grid[0][3].value = 1;
 
-    game.printGrid();
-
     const collision = game.checkGameOver(game.activePiece.shape, game.activePiecePosition);
 
     if (collision) {
