@@ -1,7 +1,7 @@
 import TetrisGame from "../../src/game/TetrisGame";
 import { TETRIS_PIECES } from "../../src/game/tetrisPieces";
 
-describe('TetrisGame Line Clearing and Scoring', () => {
+describe("TetrisGame Line Clearing and Scoring", () => {
   let game;
 
   beforeEach(() => {
@@ -22,32 +22,52 @@ describe('TetrisGame Line Clearing and Scoring', () => {
     jest.restoreAllMocks();
   });
 
-  test('getFilledRow should identify filled rows correctly', () => {
+  test("getFilledRow should identify filled rows correctly", () => {
     const row = 19;
-    game.grid[row] = game.grid[row].map(() => ({ value: 1, color: 'blue' }));
+    game.grid[row] = game.grid[row].map(() => ({ value: 1, color: "blue" }));
 
     expect(game.getFilledRow(row)).toBe(true);
   });
 
-  test('getFilledRow should return false for incomplete rows', () => {
+  test("getFilledRow should return false for incomplete rows", () => {
     const row = 19;
-    game.grid[row][0] = { value: 1, color: 'blue' };
+    game.grid[row][0] = { value: 1, color: "blue" };
 
     expect(game.getFilledRow(row)).toBe(false);
   });
 
-  test('clearLine should clear the specified row and shift others down', () => {
-    const row = 19;
-    game.grid[row] = game.grid[row].map(() => ({ value: 1, color: 'blue' }));
+  test("clearLine should clear the specified row and shift others down", () => {
+    const rowToClear = 19;
 
-    game.clearLine(row);
+    game.grid[rowToClear] = game.grid[rowToClear].map(() => ({
+      value: 1,
+      color: "blue",
+    }));
+    game.grid[rowToClear - 1] = game.grid[rowToClear - 1].map(() => ({
+      value: 1,
+      color: "red",
+    }));
+    game.grid[rowToClear - 2] = game.grid[rowToClear - 2].map(() => ({
+      value: 1,
+      color: "green",
+    }));
 
-    game.grid[row].forEach(cell => {
-      expect(cell).toEqual({ value: 0, color: 'black' });
+    game.clearLine(rowToClear);
+
+    game.grid[rowToClear].forEach((cell) => {
+      expect(cell).toEqual({ value: 1, color: "red" });
+    });
+
+    game.grid[rowToClear - 1].forEach((cell) => {
+      expect(cell).toEqual({ value: 1, color: "green" });
+    });
+
+    game.grid[rowToClear - 2].forEach((cell) => {
+      expect(cell).toEqual({ value: 0, color: "black" });
     });
   });
 
-  test('should update score correctly when lines are cleared', () => {
+  test("should update score correctly when lines are cleared", () => {
     game.level = 1;
     game.score = 0;
 
