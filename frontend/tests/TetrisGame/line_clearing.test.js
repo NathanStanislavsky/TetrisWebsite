@@ -21,4 +21,55 @@ describe('TetrisGame Line Clearing and Scoring', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
+
+  test('getFilledRow should identify filled rows correctly', () => {
+    const row = 19;
+    game.grid[row] = game.grid[row].map(() => ({ value: 1, color: 'blue' }));
+
+    expect(game.getFilledRow(row)).toBe(true);
+  });
+
+  test('getFilledRow should return false for incomplete rows', () => {
+    const row = 19;
+    game.grid[row][0] = { value: 1, color: 'blue' };
+
+    expect(game.getFilledRow(row)).toBe(false);
+  });
+
+  test('clearLine should clear the specified row and shift others down', () => {
+    const row = 19;
+    game.grid[row] = game.grid[row].map(() => ({ value: 1, color: 'blue' }));
+
+    game.clearLine(row);
+
+    game.grid[row].forEach(cell => {
+      expect(cell).toEqual({ value: 0, color: 'black' });
+    });
+  });
+
+  test('should update score correctly when lines are cleared', () => {
+    game.level = 1;
+    game.score = 0;
+
+    // Simulate clearing 1 line
+    game.numLinesCleared = 0;
+    game.score = 0;
+    game.updateScore(1);
+    expect(game.score).toBe(40 * (game.level + 1));
+
+    // Simulate clearing 2 lines
+    game.score = 0;
+    game.updateScore(2);
+    expect(game.score).toBe(100 * (game.level + 1));
+
+    // Simulate clearing 3 lines
+    game.score = 0;
+    game.updateScore(3);
+    expect(game.score).toBe(300 * (game.level + 1));
+
+    // Simulate clearing 4 lines
+    game.score = 0;
+    game.updateScore(4);
+    expect(game.score).toBe(1200 * (game.level + 1));
+  });
 });
