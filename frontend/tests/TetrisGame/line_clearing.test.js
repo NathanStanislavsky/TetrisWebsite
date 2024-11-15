@@ -17,18 +17,18 @@ describe("TetrisGame Line Clearing and Scoring", () => {
     jest.restoreAllMocks();
   });
 
-  test("getFilledRow should identify filled rows correctly", () => {
+  test("isRowFilled should identify filled rows correctly", () => {
     const row = 19;
     game.grid[row] = game.grid[row].map(() => ({ value: 1, color: "blue" }));
 
-    expect(game.getFilledRow(row)).toBe(true);
+    expect(game.isRowFilled(row)).toBe(true);
   });
 
-  test("getFilledRow should return false for incomplete rows", () => {
+  test("isRowFilled should return false for incomplete rows", () => {
     const row = 19;
     game.grid[row][0] = { value: 1, color: "blue" };
 
-    expect(game.getFilledRow(row)).toBe(false);
+    expect(game.isRowFilled(row)).toBe(false);
   });
 
   test("clearLine should clear the specified row and shift others down", () => {

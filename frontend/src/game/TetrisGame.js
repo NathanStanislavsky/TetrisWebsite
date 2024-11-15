@@ -83,7 +83,7 @@ export default class TetrisGame {
 
         // Fixed loop for clearing filled lines
         for (let row = this.grid.length - 1; row >= 0; ) {
-          if (this.getFilledRow(row)) {
+          if (this.isRowFilled(row)) {
             this.clearLine(row);
             this.numLinesCleared += 1;
             linesClearedTempCount += 1;
@@ -281,7 +281,7 @@ export default class TetrisGame {
     }
   }
 
-  getFilledRow(row) {
+  isRowFilled(row) {
     for (let col = 0; col < this.grid[row].length; col++) {
       if (this.grid[row][col].value === 0) {
         return false;
