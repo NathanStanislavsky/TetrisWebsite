@@ -48,7 +48,7 @@ export default class TetrisGame {
     this.gameOver = false;
   }
 
-  update(time = 0) {
+  updateGameState(time = 0) {
     if (this.gameOver) return;
 
     const deltaTime = time - this.lastTime;

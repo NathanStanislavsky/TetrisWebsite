@@ -23,7 +23,7 @@ export const Play = () => {
     let animationFrameId;
 
     const gameLoop = (time) => {
-      tetrisGame.update(time);
+      tetrisGame.updateGameState(time);
       tetrisGame.render();
 
       setScore(tetrisGame.score);
