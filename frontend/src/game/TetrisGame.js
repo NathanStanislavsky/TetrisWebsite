@@ -30,7 +30,7 @@ export default class TetrisGame {
     this.gameOver = false;
   }
 
-  resetGame() {
+  resetGameState() {
     this.grid = this.createGrid(20, 10);
     this.activePiece = this.createPiece();
     this.activePiecePosition = { x: 3, y: 0 };

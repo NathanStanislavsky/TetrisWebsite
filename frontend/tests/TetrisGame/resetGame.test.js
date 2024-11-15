@@ -17,7 +17,7 @@ describe('TetrisGame Reset Functionality', () => {
     game.level = 5;
     game.gameOver = true;
 
-    game.resetGame();
+    game.resetGameState();
 
     expect(game.score).toBe(0);
     expect(game.level).toBe(1);

@@ -69,7 +69,7 @@ export const Play = () => {
 
   const restartGame = () => {
     if (tetrisGameRef.current) {
-      tetrisGameRef.current.resetGame();
+      tetrisGameRef.current.resetGameState();
       setGameOver(false);
       setScore(0);
       setLevel(1);
