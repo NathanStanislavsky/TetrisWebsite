@@ -101,7 +101,7 @@ export default class TetrisGame {
       this.dropCounter = 0;
     }
 
-    this.render();
+    this.renderGridAndPieces();
   }
 
   updateScore(linesCleared) {
@@ -176,7 +176,7 @@ export default class TetrisGame {
     return false;
   }
 
-  render() {
+  renderGridAndPieces() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid();
     this.drawGhostPiece();
