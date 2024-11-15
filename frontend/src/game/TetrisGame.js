@@ -207,7 +207,7 @@ export default class TetrisGame {
     };
   }
 
-  getPseudoPosition() {
+  getGhostPosition() {
     let pseudoPosition = {
       x: this.activePiecePosition.x,
       y: this.activePiecePosition.y,
@@ -390,7 +390,7 @@ export default class TetrisGame {
 
   hardDrop() {
     const startY = this.activePiecePosition.y;
-    const ghostPosition = this.getPseudoPosition();
+    const ghostPosition = this.getGhostPosition();
     this.activePiecePosition = ghostPosition;
     this.score += (ghostPosition.y - startY) * 2; // hard drop bonus points
     this.lockPiece();
@@ -525,7 +525,7 @@ export default class TetrisGame {
   }
 
   drawGhostPiece() {
-    const ghostPosition = this.getPseudoPosition();
+    const ghostPosition = this.getGhostPosition();
     const blockSize = 30;
 
     this.context.globalAlpha = 0.6;
