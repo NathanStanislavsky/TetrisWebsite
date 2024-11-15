@@ -59,7 +59,7 @@ describe('TetrisGame Rendering Specific Piece', () => {
     jest.restoreAllMocks();
   });
 
-  test('drawPiece should render the "O" piece correctly at the specified position on the main canvas', () => {
+  test('drawActivePiece should render the "O" piece correctly at the specified position on the main canvas', () => {
     const blockSize = 30; // Block size in the main game area
     const { x, y } = game.activePiecePosition;
 
@@ -71,7 +71,7 @@ describe('TetrisGame Rendering Specific Piece', () => {
       { x: (x + 1) * blockSize, y: (y + 1) * blockSize },
     ];
 
-    game.drawPiece();
+    game.drawActivePiece();
 
     expect(mockContext.fillStyle).toBe(game.getPieceColor(game.activePiece.type));
 

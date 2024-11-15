@@ -180,7 +180,7 @@ export default class TetrisGame {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid();
     this.drawGhostPiece();
-    this.drawPiece();
+    this.drawActivePiece();
     this.drawStoredPiece();
     this.drawNextPiece();
   }
@@ -425,7 +425,7 @@ export default class TetrisGame {
     this.storedAPiece = false;
   }
 
-  drawPiece() {
+  drawActivePiece() {
     const blockSize = 30;
     const { x, y } = this.activePiecePosition;
 
