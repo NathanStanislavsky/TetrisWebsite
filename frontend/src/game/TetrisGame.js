@@ -54,8 +54,6 @@ export default class TetrisGame {
     }
 
     this.renderGridAndPieces();
-
-    requestAnimationFrame(this.updateGameState.bind(this));
   }
 
   handlePieceDrop() {
