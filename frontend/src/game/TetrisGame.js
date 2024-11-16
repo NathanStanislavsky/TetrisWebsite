@@ -54,6 +54,8 @@ export default class TetrisGame {
     }
 
     this.renderGridAndPieces();
+
+    requestAnimationFrame(this.updateGameState.bind(this));
   }
 
   handlePieceDrop() {
@@ -72,7 +74,9 @@ export default class TetrisGame {
       this.drawNextPiece();
       this.activePiecePosition = { x: 3, y: 0 };
 
-      if (this.checkGameOver(this.activePiece.shape, this.activePiecePosition)) {
+      if (
+        this.checkGameOver(this.activePiece.shape, this.activePiecePosition)
+      ) {
         this.gameOver = true;
         return;
       }
@@ -174,12 +178,17 @@ export default class TetrisGame {
       this.nextPiece = this.createPiece();
       this.drawNextPiece();
     } else {
-      [this.activePiece, this.storedPiece] = [this.storedPiece, this.activePiece];
+      [this.activePiece, this.storedPiece] = [
+        this.storedPiece,
+        this.activePiece,
+      ];
     }
 
     this.activePiecePosition = { x: 3, y: 0 };
 
-    if (!this.checkCollision(this.activePiece.shape, this.activePiecePosition)) {
+    if (
+      !this.checkCollision(this.activePiece.shape, this.activePiecePosition)
+    ) {
       this.drawStoredPiece();
     }
   }
@@ -218,6 +227,7 @@ export default class TetrisGame {
 
   clearLine(row) {
     this.grid.splice(row, 1);
+
     this.grid.unshift(
       Array.from({ length: TetrisGame.GRID_COLS }, () => ({
         value: 0,
