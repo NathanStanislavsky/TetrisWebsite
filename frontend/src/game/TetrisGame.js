@@ -108,23 +108,7 @@ export default class TetrisGame {
   }
 
   checkGameOver(piece, position) {
-    for (let row = 0; row < piece.length; row++) {
-      for (let col = 0; col < piece[row].length; col++) {
-        if (piece[row][col] !== 0) {
-          const newY = position.y + row;
-          const newX = position.x + col;
-          if (
-            newX < 0 ||
-            newX >= this.grid[0].length ||
-            newY >= this.grid.length ||
-            (newY >= 0 && this.grid[newY][newX].value !== 0)
-          ) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
+    return this.checkCollision(piece, position);
   }
 
   renderGridAndPieces() {
@@ -149,6 +133,7 @@ export default class TetrisGame {
     return {
       shape: TETRIS_PIECES[randomPiece],
       type: randomPiece,
+      color: this.getPieceColor(randomPiece),
     };
   }
 
