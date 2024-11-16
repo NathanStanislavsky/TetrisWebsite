@@ -256,24 +256,28 @@ export default class TetrisGame {
     return false;
   }
 
-  moveLeft() {
+  movePiece(deltaX, deltaY, scoreIncrement = 0) {
     const newPos = {
-      x: this.activePiecePosition.x - 1,
-      y: this.activePiecePosition.y,
+      x: this.activePiecePosition.x + deltaX,
+      y: this.activePiecePosition.y + deltaY,
     };
     if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x -= 1;
+      this.activePiecePosition.x += deltaX;
+      this.activePiecePosition.y += deltaY;
+      this.score += scoreIncrement;
     }
   }
 
+  moveLeft() {
+    this.movePiece(-1, 0);
+  }
+  
   moveRight() {
-    const newPos = {
-      x: this.activePiecePosition.x + 1,
-      y: this.activePiecePosition.y,
-    };
-    if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.x += 1;
-    }
+    this.movePiece(1, 0);
+  }
+  
+  softDrop() {
+    this.movePiece(0, 1, 1); // Increase score by 1 for soft drop
   }
 
   rotatePiece() {
@@ -291,17 +295,6 @@ export default class TetrisGame {
         this.activePiece.shape = rotatedPiece;
         return;
       }
-    }
-  }
-
-  softDrop() {
-    const newPos = {
-      x: this.activePiecePosition.x,
-      y: this.activePiecePosition.y + 1,
-    };
-    if (!this.checkCollision(this.activePiece.shape, newPos)) {
-      this.activePiecePosition.y += 1;
-      this.score += 1;
     }
   }
 
