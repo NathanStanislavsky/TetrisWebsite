@@ -33,32 +33,25 @@ describe("TetrisGame Line Clearing and Scoring", () => {
 
   test("clearLine should clear the specified row and shift others down", () => {
     const rowToClear = 19;
-
-    game.grid[rowToClear] = game.grid[rowToClear].map(() => ({
-      value: 1,
-      color: "blue",
-    }));
-    game.grid[rowToClear - 1] = game.grid[rowToClear - 1].map(() => ({
-      value: 1,
-      color: "red",
-    }));
-    game.grid[rowToClear - 2] = game.grid[rowToClear - 2].map(() => ({
-      value: 1,
-      color: "green",
-    }));
-
+  
+    // Fill the rows with piece values (integers)
+    game.grid[rowToClear] = game.grid[rowToClear].map(() => 1); // Row to clear
+    game.grid[rowToClear - 1] = game.grid[rowToClear - 1].map(() => 2);
+    game.grid[rowToClear - 2] = game.grid[rowToClear - 2].map(() => 3);
+  
+    // Perform the line clear
     game.clearLine(rowToClear);
 
-    game.grid[rowToClear].forEach((cell) => {
-      expect(cell).toEqual({ value: 1, color: "red" });
-    });
-
-    game.grid[rowToClear - 1].forEach((cell) => {
-      expect(cell).toEqual({ value: 1, color: "green" });
-    });
-
     game.grid[rowToClear - 2].forEach((cell) => {
-      expect(cell).toEqual({ value: 0, color: "black" });
+      expect(cell).toBe(0);
+    });
+
+    game.grid[rowToClear].forEach((cell) => {
+      expect(cell).toBe(2); 
+    });
+  
+    game.grid[rowToClear - 1].forEach((cell) => {
+      expect(cell).toBe(3); 
     });
   });
 

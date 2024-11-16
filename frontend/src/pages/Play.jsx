@@ -28,6 +28,7 @@ export const Play = () => {
 
     const gameLoop = (time) => {
       tetrisGame.updateGameState(time);
+      tetrisGame.renderGridAndPieces();
 
       setScore(tetrisGame.score);
       setLevel(tetrisGame.level);

@@ -1,5 +1,15 @@
 import { TETRIS_PIECES } from "./tetrisPieces.js";
 
+const PIECE_TYPES = {
+  0: "black",  
+  1: "cyan",
+  2: "purple", 
+  3: "yellow",
+  4: "red", 
+  5: "green",
+  6: "orange", 
+  7: "pink"
+};
 export default class TetrisGame {
   static BLOCK_SIZE_MAIN = 30;
   static BLOCK_SIZE_PREVIEW = 20;
@@ -53,7 +63,6 @@ export default class TetrisGame {
       this.dropCounter = 0;
     }
 
-    this.renderGridAndPieces();
   }
 
   handlePieceDrop() {
@@ -120,7 +129,7 @@ export default class TetrisGame {
 
   createGrid(rows, cols) {
     return Array.from({ length: rows }, () =>
-      Array.from({ length: cols }, () => ({ value: 0, color: "black" }))
+      Array(cols).fill(0)
     );
   }
 
@@ -131,7 +140,6 @@ export default class TetrisGame {
     return {
       shape: TETRIS_PIECES[randomPiece],
       type: randomPiece,
-      color: this.getPieceColor(randomPiece),
     };
   }
 
@@ -205,18 +213,12 @@ export default class TetrisGame {
   }
 
   isRowFilled(row) {
-    return this.grid[row].every((cell) => cell.value !== 0);
+    return this.grid[row].every((cellValue) => cellValue !== 0);
   }
 
   clearLine(row) {
     this.grid.splice(row, 1);
-
-    this.grid.unshift(
-      Array.from({ length: TetrisGame.GRID_COLS }, () => ({
-        value: 0,
-        color: "black",
-      }))
-    );
+    this.grid.unshift(Array(TetrisGame.GRID_COLS).fill(0));
   }
 
   checkCollision(piece, position) {
@@ -227,9 +229,9 @@ export default class TetrisGame {
           const newX = position.x + col;
           if (
             newX < 0 ||
-            newX >= this.grid[0].length ||
-            newY >= this.grid.length ||
-            (newY >= 0 && this.grid[newY][newX].value !== 0)
+            newX >= TetrisGame.GRID_COLS ||
+            newY >= TetrisGame.GRID_ROWS ||
+            (newY >= 0 && this.grid[newY][newX] !== 0)
           ) {
             return true;
           }
@@ -289,9 +291,21 @@ export default class TetrisGame {
     this.lockPiece();
   }
 
+  getPieceValue(type) {
+    const pieceValues = {
+      I: 1,
+      T: 2,
+      O: 3,
+      S: 4,
+      Z: 5,
+      L: 6,
+      J: 7,
+    };
+    return pieceValues[type];
+  }
+
   lockPiece() {
-    const pieceColor = this.getPieceColor(this.activePiece.type);
-  
+    const pieceValue = this.getPieceValue(this.activePiece.type);
     const { shape } = this.activePiece;
     const { x: posX, y: posY } = this.activePiecePosition;
   
@@ -301,8 +315,14 @@ export default class TetrisGame {
           const gridY = posY + row;
           const gridX = posX + col;
   
-          this.grid[gridY][gridX].value = 1;
-          this.grid[gridY][gridX].color = pieceColor;
+          if (
+            gridY >= 0 &&
+            gridY < TetrisGame.GRID_ROWS &&
+            gridX >= 0 &&
+            gridX < TetrisGame.GRID_COLS
+          ) {
+            this.grid[gridY][gridX] = pieceValue;
+          }
         }
       }
     }
@@ -311,8 +331,9 @@ export default class TetrisGame {
   }
 
   drawPiece(context, piece, position, blockSize) {
-    context.fillStyle = this.getPieceColor(piece.type);
-
+    const pieceValue = this.getPieceValue(piece.type);
+    context.fillStyle = PIECE_TYPES[pieceValue];
+  
     for (let row = 0; row < piece.shape.length; row++) {
       for (let col = 0; col < piece.shape[row].length; col++) {
         if (piece.shape[row][col] !== 0) {
@@ -368,10 +389,10 @@ export default class TetrisGame {
   }
 
   drawGrid() {
-    for (let row = 0; row < this.grid.length; row++) {
-      for (let col = 0; col < this.grid[row].length; col++) {
-        const cell = this.grid[row][col];
-        this.context.fillStyle = cell.value === 1 ? cell.color : "black";
+    for (let row = 0; row < TetrisGame.GRID_ROWS; row++) {
+      for (let col = 0; col < TetrisGame.GRID_COLS; col++) {
+        const cellValue = this.grid[row][col];
+        this.context.fillStyle = PIECE_TYPES[cellValue];
         this.context.fillRect(
           col * TetrisGame.BLOCK_SIZE_MAIN,
           row * TetrisGame.BLOCK_SIZE_MAIN,

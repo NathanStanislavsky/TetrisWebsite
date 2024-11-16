@@ -25,16 +25,11 @@ describe('TetrisGame game over', () => {
 
   test('should set gameOver to true when a new piece collides at spawn', () => {
     // Simulate a block at the spawn position
-    game.grid[0][3].value = 1;
-
+    game.grid[0][3] = 1;
+  
     const collision = game.checkGameOver(game.activePiece.shape, game.activePiecePosition);
-
-    if (collision) {
-      game.gameOver = true;
-    }
-
+  
     expect(collision).toBe(true);
-    expect(game.gameOver).toBe(true);
   });
 
   test('should not set gameOver when there is no collision at spawn', () => {
