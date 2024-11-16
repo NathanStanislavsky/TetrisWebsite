@@ -315,28 +315,22 @@ export default class TetrisGame {
 
   lockPiece() {
     const pieceColor = this.getPieceColor(this.activePiece.type);
-
-    for (let row = 0; row < this.activePiece.shape.length; row++) {
-      for (let col = 0; col < this.activePiece.shape[row].length; col++) {
-        if (this.activePiece.shape[row][col] !== 0) {
-          const gridY = this.activePiecePosition.y + row;
-          const gridX = this.activePiecePosition.x + col;
-
-          if (
-            gridY >= 0 &&
-            gridY < this.grid.length &&
-            gridX >= 0 &&
-            gridX < this.grid[0].length
-          ) {
-            this.grid[gridY][gridX] = {
-              value: 1,
-              color: pieceColor,
-            };
-          }
+  
+    const { shape } = this.activePiece;
+    const { x: posX, y: posY } = this.activePiecePosition;
+  
+    for (let row = 0; row < shape.length; row++) {
+      for (let col = 0; col < shape[row].length; col++) {
+        if (shape[row][col] !== 0) {
+          const gridY = posY + row;
+          const gridX = posX + col;
+  
+          this.grid[gridY][gridX].value = 1;
+          this.grid[gridY][gridX].color = pieceColor;
         }
       }
     }
-
+  
     this.storedAPiece = false;
   }
 
