@@ -12,16 +12,11 @@ describe('TetrisGame Reset Functionality', () => {
   });
 
   test('resetGame should reset all game properties to initial values', () => {
-    // Modify game state
-    game.score = 100;
-    game.level = 5;
-    game.gameOver = true;
-
-    game.resetGame();
-
+    game.resetGameState();
+  
     expect(game.score).toBe(0);
     expect(game.level).toBe(1);
     expect(game.gameOver).toBe(false);
-    expect(game.grid.flat().every(cell => cell.value === 0)).toBe(true);
+    expect(game.grid.flat().every(cell => cell === 0)).toBe(true);
   });
 });

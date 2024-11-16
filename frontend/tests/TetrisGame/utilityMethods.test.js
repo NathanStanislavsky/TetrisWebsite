@@ -27,8 +27,8 @@ describe('TetrisGame Utility Methods', () => {
     });
   });
 
-  test('getPseudoPosition should return the lowest valid y position for the active piece', () => {
-    const position = game.getPseudoPosition();
+  test('getGhostPosition should return the lowest valid y position for the active piece', () => {
+    const position = game.getGhostPosition();
 
     expect(position.y).toBeGreaterThanOrEqual(game.activePiecePosition.y);
     expect(game.checkCollision(game.activePiece.shape, { x: position.x, y: position.y + 1 })).toBe(true);

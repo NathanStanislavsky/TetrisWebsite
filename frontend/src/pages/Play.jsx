@@ -17,14 +17,18 @@ export const Play = () => {
     const storedPieceCanvas = storedPieceCanvasRef.current;
     const nextPieceCanvas = nextPieceCanvasRef.current;
 
-    tetrisGameRef.current = new TetrisGame(canvas, storedPieceCanvas, nextPieceCanvas);
+    tetrisGameRef.current = new TetrisGame(
+      canvas,
+      storedPieceCanvas,
+      nextPieceCanvas
+    );
     const tetrisGame = tetrisGameRef.current;
 
     let animationFrameId;
 
     const gameLoop = (time) => {
-      tetrisGame.update(time);
-      tetrisGame.render();
+      tetrisGame.updateGameState(time);
+      tetrisGame.renderGridAndPieces();
 
       setScore(tetrisGame.score);
       setLevel(tetrisGame.level);
@@ -33,28 +37,18 @@ export const Play = () => {
       animationFrameId = requestAnimationFrame(gameLoop);
     };
 
+    const keyActions = {
+      ArrowLeft: () => tetrisGame.moveLeft(),
+      ArrowRight: () => tetrisGame.moveRight(),
+      ArrowDown: () => tetrisGame.softDrop(),
+      ArrowUp: () => tetrisGame.rotatePiece(),
+      Shift: () => tetrisGame.storePiece(),
+      " ": () => tetrisGame.hardDrop(),
+    };
+
     const handleKeyDown = (event) => {
-      switch (event.key) {
-        case "ArrowLeft":
-          tetrisGame.moveLeft();
-          break;
-        case "ArrowRight":
-          tetrisGame.moveRight();
-          break;
-        case "ArrowDown":
-          tetrisGame.softDrop();
-          break;
-        case "ArrowUp":
-          tetrisGame.rotatePiece();
-          break;
-        case "Shift":
-          tetrisGame.storePiece();
-          break;
-        case " ":
-          tetrisGame.hardDrop();
-          break;
-        default:
-          break;
+      if (keyActions[event.key]) {
+        keyActions[event.key]();
       }
     };
 
@@ -69,7 +63,7 @@ export const Play = () => {
 
   const restartGame = () => {
     if (tetrisGameRef.current) {
-      tetrisGameRef.current.resetGame();
+      tetrisGameRef.current.resetGameState();
       setGameOver(false);
       setScore(0);
       setLevel(1);

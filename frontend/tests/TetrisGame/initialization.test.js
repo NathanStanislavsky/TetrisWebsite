@@ -14,13 +14,13 @@ describe('TetrisGame Initialization', () => {
   });
 
   test('should initialize the grid with correct dimensions and values', () => {
-    const { grid } = game;
-    expect(grid.length).toBe(20); // 20 rows
-    expect(grid[0].length).toBe(10); // 10 columns
-
+    const grid = game.grid;
+  
+    expect(grid.length).toBe(TetrisGame.GRID_ROWS);
     grid.forEach(row => {
+      expect(row.length).toBe(TetrisGame.GRID_COLS);
       row.forEach(cell => {
-        expect(cell).toEqual({ value: 0, color: 'black' });
+        expect(cell).toBe(0);
       });
     });
   });
