@@ -28,26 +28,27 @@ export const getLeaderboardData = async (req, res) => {
 
 export const deleteHighScore = async (req, res) => {
   try {
-    const smallestHighScore = await HighScore.findOne().sort({ score: 1 });
+    // Find the player score with the smallest score
+    const smallestHighScore = await PlayerScore.findOne().sort({ score: 1 });
 
+    // If no scores exist, return a 404 error
     if (!smallestHighScore) {
-      return res.status(404).json({ message: "No high scores to delete" });
+      return res.status(404).json({ message: "No scores to delete" });
     }
 
-    // Delete the smallest high score
-    const deletedHighScore = await HighScore.findByIdAndDelete(smallestHighScore._id);
+    // Delete the smallest score
+    const deletedHighScore = await PlayerScore.findByIdAndDelete(smallestHighScore._id);
 
     // Return success response
     res.status(200).json({ 
-      message: "Smallest high score deleted successfully", 
+      message: "Smallest score deleted successfully", 
       deletedHighScore 
     });
   } catch (error) {
-    // Handle errors and send a server error response
-    console.error("Error deleting smallest high score:", error);
+    console.error("Error deleting smallest score:", error);
     res.status(500).json({ 
-      message: "An error occurred while deleting the smallest high score", 
-      error 
+      message: "An error occurred while deleting the smallest score", 
+      error: error.message || error 
     });
   }
 };
