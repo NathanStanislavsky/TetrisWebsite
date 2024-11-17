@@ -61,6 +61,38 @@ export const Play = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (gameOver) {
+      const submitScore = async () => {
+        try {
+          const response = await fetch("http://localhost:3000/api/newScore", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              player: "PlayerName",
+              score: score,
+              date: new Date(),
+            }),
+          });
+  
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to submit score");
+          }
+  
+          const data = await response.json();
+          console.log("Score submitted successfully:", data);
+        } catch (error) {
+          console.error("Error submitting score:", error.message);
+        }
+      };
+  
+      submitScore();
+    }
+  }, [gameOver, score]);
+
   const restartGame = () => {
     if (tetrisGameRef.current) {
       tetrisGameRef.current.resetGameState();
