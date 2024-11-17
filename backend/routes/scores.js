@@ -11,6 +11,6 @@ router.post('/newScore', submitNewScore);
 router.get('/scores', getLeaderboardData);
 
 // delete a score
-router.get('/deleteScore', deleteHighScore);
+router.delete('/deleteScore', deleteHighScore);
 
 export default router;
