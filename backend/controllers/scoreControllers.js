@@ -25,3 +25,24 @@ export const getLeaderboardData = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const deleteHighScore = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "High score ID is required" });
+    }
+
+    const deletedHighScore = await HighScore.findByIdAndDelete(id);
+
+    if (!deletedHighScore) {
+      return res.status(404).json({ message: "High score not found" });
+    }
+
+    res.status(200).json({ message: "High score deleted successfully", deletedHighScore });
+  } catch (error) {
+    console.error("Error deleting high score:", error);
+    res.status(500).json({ message: "An error occurred while deleting the high score", error });
+  }
+};

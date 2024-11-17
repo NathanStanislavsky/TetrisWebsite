@@ -1,6 +1,6 @@
 // scoreRoutes.js
 import { Router } from 'express';
-import { submitNewScore, getLeaderboardData } from '../controllers/scoreControllers.js';
+import { submitNewScore, getLeaderboardData, deleteHighScore } from '../controllers/scoreControllers.js';
 
 const router = Router();
 
@@ -9,5 +9,8 @@ router.post('/newScore', submitNewScore);
 
 // Retrieve leaderboard data (API)
 router.get('/scores', getLeaderboardData);
+
+// delete a score
+router.get('/deleteScore', deleteHighScore);
 
 export default router;
