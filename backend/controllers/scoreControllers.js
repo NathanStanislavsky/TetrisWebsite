@@ -52,3 +52,27 @@ export const deleteHighScore = async (req, res) => {
     });
   }
 };
+
+export const getSmallestScore = async (req, res) => {
+  try {
+    // Find the score with the smallest value
+    const smallestHighScore = await PlayerScore.findOne().sort({ score: 1 });
+
+    // Check if any score exists in the database
+    if (!smallestHighScore) {
+      return res.status(404).json({ message: "No scores found" });
+    }
+
+    // Return the smallest score
+    res.status(200).json({
+      message: "Smallest score retrieved successfully",
+      smallestHighScore,
+    });
+  } catch (error) {
+    console.error("Error retrieving smallest score:", error);
+    res.status(500).json({
+      message: "An error occurred while retrieving the smallest score",
+      error: error.message || error,
+    });
+  }
+};
