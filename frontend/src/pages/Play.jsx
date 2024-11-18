@@ -141,12 +141,12 @@ export const Play = () => {
         ></canvas>
 
         {/* Info Panel */}
-        <div className="text-left text-white bg-slate-800 p-4 w-60 text-xl font-custom">
-          <h2 className="mb-2">Score: {score}</h2>
+        <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
+          <h2 className="mb-6">Score: {score}</h2>
           <h3 className="mb-2">Level: {level}</h3>
 
-          <h4 className="mb-1">Stored Piece</h4>
-          <div className="flex flex-col items-center">
+          <h4 className="mb-1 mt-10">Stored Piece</h4>
+          <div className="flex flex-col mt-2 items-center">
             <canvas
               ref={storedPieceCanvasRef}
               width="80"
