@@ -25,3 +25,54 @@ export const getLeaderboardData = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const deleteHighScore = async (req, res) => {
+  try {
+    // Find the player score with the smallest score
+    const smallestHighScore = await PlayerScore.findOne().sort({ score: 1 });
+
+    // If no scores exist, return a 404 error
+    if (!smallestHighScore) {
+      return res.status(404).json({ message: "No scores to delete" });
+    }
+
+    // Delete the smallest score
+    const deletedHighScore = await PlayerScore.findByIdAndDelete(smallestHighScore._id);
+
+    // Return success response
+    res.status(200).json({ 
+      message: "Smallest score deleted successfully", 
+      deletedHighScore 
+    });
+  } catch (error) {
+    console.error("Error deleting smallest score:", error);
+    res.status(500).json({ 
+      message: "An error occurred while deleting the smallest score", 
+      error: error.message || error 
+    });
+  }
+};
+
+export const getSmallestScore = async (req, res) => {
+  try {
+    // Find the score with the smallest value
+    const smallestHighScore = await PlayerScore.findOne().sort({ score: 1 });
+
+    // Check if any score exists in the database
+    if (!smallestHighScore) {
+      return res.status(404).json({ message: "No scores found" });
+    }
+
+    // Return the smallest score
+    res.status(200).json({
+      message: "Smallest score retrieved successfully",
+      smallestHighScore,
+    });
+  } catch (error) {
+    console.error("Error retrieving smallest score:", error);
+    res.status(500).json({
+      message: "An error occurred while retrieving the smallest score",
+      error: error.message || error,
+    });
+  }
+};

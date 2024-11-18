@@ -61,6 +61,60 @@ export const Play = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (gameOver) {
+      const submitScore = async () => {
+        try {
+          // Submit the new score
+          const response = await fetch("http://localhost:3000/api/newScore", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              player: "PlayerName",
+              score: score,
+              date: new Date(),
+            }),
+          });
+  
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to submit score");
+          }
+  
+          console.log("Score submitted successfully");
+  
+          // Fetch all scores to check if cleanup is needed
+          const scoresResponse = await fetch("http://localhost:3000/api/scores");
+          if (!scoresResponse.ok) {
+            throw new Error("Failed to fetch scores");
+          }
+  
+          const scores = await scoresResponse.json();
+          console.log("Fetched scores:", scores);
+  
+          // Delete the smallest score if there are more than 10
+          if (scores.length > 10) {
+            const deleteResponse = await fetch("http://localhost:3000/api/deleteScore", {
+              method: "DELETE",
+            });
+  
+            if (!deleteResponse.ok) {
+              throw new Error("Failed to delete the smallest score");
+            }
+  
+            console.log("Smallest score deleted successfully");
+          }
+        } catch (error) {
+          console.error("Error handling leaderboard:", error.message);
+        }
+      };
+  
+      submitScore();
+    }
+  }, [gameOver, score]);
+
   const restartGame = () => {
     if (tetrisGameRef.current) {
       tetrisGameRef.current.resetGameState();
