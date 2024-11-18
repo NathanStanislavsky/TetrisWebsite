@@ -142,27 +142,32 @@ export const Play = () => {
 
         {/* Info Panel */}
         <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
-          <h2 className="mb-6">Score: {score}</h2>
-          <h3 className="mb-2">Level: {level}</h3>
+          <h2 className="p-5 border">Score: {score}</h2>
 
-          <h4 className="mb-1 mt-10">Stored Piece</h4>
-          <div className="flex flex-col mt-2 items-center">
-            <canvas
-              ref={storedPieceCanvasRef}
-              width="80"
-              height="80"
-              className="mt-2"
-            ></canvas>
+          <h3 className="p-5 border">Level: {level}</h3>
+
+          <div className="p-5 border">
+            <h4 className="mb-1">Stored Piece</h4>
+            <div className="flex flex-col items-center">
+              <canvas
+                ref={storedPieceCanvasRef}
+                width="80"
+                height="80"
+                className="mt-2"
+              ></canvas>
+            </div>
           </div>
 
-          <h4>Next Piece</h4>
-          <div className="flex flex-col mt-2 items-center">
-            <canvas
-              ref={nextPieceCanvasRef}
-              width="80"
-              height="80"
-              className="mt-2"
-            ></canvas>
+          <div className="p-5 border">
+            <h4>Next Piece</h4>
+            <div className="flex flex-col items-center">
+              <canvas
+                ref={nextPieceCanvasRef}
+                width="80"
+                height="80"
+                className="mt-2"
+              ></canvas>
+            </div>
           </div>
         </div>
       </div>
