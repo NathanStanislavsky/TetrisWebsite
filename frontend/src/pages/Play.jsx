@@ -136,7 +136,7 @@ export const Play = () => {
         ></canvas>
 
         {/* Info Panel */}
-        <div className="text-left text-white bg-slate-500 p-10 w-40">
+        <div className="text-left text-white bg-slate-800 p-10 w-40">
           <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
           <h3 className="text-xl mb-4">Level: {level}</h3>
           <h4 className="text-lg font-semibold">Stored Piece</h4>
