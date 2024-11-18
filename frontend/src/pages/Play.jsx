@@ -137,11 +137,11 @@ export const Play = () => {
 
         {/* Info Panel */}
         <div className="text-left text-white bg-slate-800 p-10 w-60 text-3xl font-custom">
-          <h2 className="font-bold mb-4">Score: {score}</h2>
+          <h2 className="mb-4">Score: {score}</h2>
           <h3 className="mb-4">Level: {level}</h3>
-          <h4 className="font-semibold">Stored Piece</h4>
+          <h4 className="">Stored Piece</h4>
           <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
-          <h4 className="font-semibold mt-4">Next Piece</h4>
+          <h4 className="mt-4">Next Piece</h4>
           <canvas ref={nextPieceCanvasRef} width="80" height="80"></canvas>
         </div>
       </div>
