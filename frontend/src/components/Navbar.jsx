@@ -8,6 +8,12 @@ const Navbar = () => {
           Tetris
         </h1>
         <Link
+          to="/"
+          className="text-white no-underline text-3xl py-2 px-4 rounded transition duration-300 ease-in-out hover:bg-blue-500"
+        >
+          Home
+        </Link>
+        <Link
           to="/play"
           className="text-white no-underline text-3xl py-2 px-4 rounded transition duration-300 ease-in-out hover:bg-blue-500"
         >
