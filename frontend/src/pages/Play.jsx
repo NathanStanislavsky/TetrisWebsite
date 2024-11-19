@@ -77,40 +77,45 @@ export const Play = () => {
               date: new Date(),
             }),
           });
-  
+
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || "Failed to submit score");
           }
-  
+
           console.log("Score submitted successfully");
-  
+
           // Fetch all scores to check if cleanup is needed
-          const scoresResponse = await fetch("http://localhost:3000/api/scores");
+          const scoresResponse = await fetch(
+            "http://localhost:3000/api/scores"
+          );
           if (!scoresResponse.ok) {
             throw new Error("Failed to fetch scores");
           }
-  
+
           const scores = await scoresResponse.json();
           console.log("Fetched scores:", scores);
-  
+
           // Delete the smallest score if there are more than 10
           if (scores.length > 10) {
-            const deleteResponse = await fetch("http://localhost:3000/api/deleteScore", {
-              method: "DELETE",
-            });
-  
+            const deleteResponse = await fetch(
+              "http://localhost:3000/api/deleteScore",
+              {
+                method: "DELETE",
+              }
+            );
+
             if (!deleteResponse.ok) {
               throw new Error("Failed to delete the smallest score");
             }
-  
+
             console.log("Smallest score deleted successfully");
           }
         } catch (error) {
           console.error("Error handling leaderboard:", error.message);
         }
       };
-  
+
       submitScore();
     }
   }, [gameOver, score]);
@@ -136,13 +141,34 @@ export const Play = () => {
         ></canvas>
 
         {/* Info Panel */}
-        <div className="text-left text-white bg-slate-500 p-10 w-40">
-          <h2 className="text-2xl font-bold mb-4">Score: {score}</h2>
-          <h3 className="text-xl mb-4">Level: {level}</h3>
-          <h4 className="text-lg font-semibold">Stored Piece</h4>
-          <canvas ref={storedPieceCanvasRef} width="80" height="80"></canvas>
-          <h4 className="text-lg font-semibold mt-4">Next Piece</h4>
-          <canvas ref={nextPieceCanvasRef} width="80" height="80"></canvas>
+        <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
+          <h2 className="p-5 border">Score: {score}</h2>
+
+          <h3 className="p-5 border">Level: {level}</h3>
+
+          <div className="p-5 border">
+            <h4 className="mb-1">Stored Piece</h4>
+            <div className="flex flex-col items-center">
+              <canvas
+                ref={storedPieceCanvasRef}
+                width="80"
+                height="80"
+                className="mt-2"
+              ></canvas>
+            </div>
+          </div>
+
+          <div className="p-5 border">
+            <h4>Next Piece</h4>
+            <div className="flex flex-col items-center">
+              <canvas
+                ref={nextPieceCanvasRef}
+                width="80"
+                height="80"
+                className="mt-2"
+              ></canvas>
+            </div>
+          </div>
         </div>
       </div>
 

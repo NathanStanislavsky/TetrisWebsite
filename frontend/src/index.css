@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'mexcellent';
+    src: url('./assets/fonts/mexcellentFont/mexcellent rg.otf') format('opentype'); /* Path relative to index.css */
+    font-weight: normal;
+    font-style: normal;
+}
