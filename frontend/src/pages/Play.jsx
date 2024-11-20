@@ -145,21 +145,6 @@ export const Play = () => {
 
   return (
     <div className="relative flex justify-center mt-6">
-      {/* Full-Screen Pause Overlay */}
-      {gamePaused && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold mb-8">Paused</h2>
-            <button
-              onClick={togglePause}
-              className="bg-blue-500 text-white px-6 py-3 rounded text-2xl hover:bg-blue-700"
-            >
-              Resume Game
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Game Canvas */}
       <canvas
         ref={canvasRef}
@@ -215,6 +200,21 @@ export const Play = () => {
               className="bg-red-500 text-white px-6 py-3 rounded text-2xl hover:bg-red-700"
             >
               Restart Game
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Full-Screen Pause Overlay */}
+      {gamePaused && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-8">Paused</h2>
+            <button
+              onClick={togglePause}
+              className="bg-blue-500 text-white px-6 py-3 rounded text-2xl hover:bg-blue-700"
+            >
+              Resume Game
             </button>
           </div>
         </div>
