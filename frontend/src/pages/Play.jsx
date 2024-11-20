@@ -160,7 +160,7 @@ export const Play = () => {
             onClick={togglePause}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            {gamePaused ? "Resume" : "Pause"}
+            Pause
           </button>
         </div>
         <h2 className="p-5 border">Score: {score}</h2>
