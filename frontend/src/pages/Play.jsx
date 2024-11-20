@@ -10,6 +10,9 @@ export const Play = () => {
   const [level, setLevel] = useState(1);
   const [gameOver, setGameOver] = useState(false);
 
+  const [gamePaused, setGamePaused] = useState(false);
+  const [game, setGame] = useState(null);
+
   const tetrisGameRef = useRef(null);
 
   useEffect(() => {
@@ -44,7 +47,7 @@ export const Play = () => {
       ArrowUp: () => tetrisGame.rotatePiece(),
       Shift: () => tetrisGame.storePiece(),
       " ": () => tetrisGame.hardDrop(),
-      "p": () => tetrisGame.togglePause(),
+      p: () => tetrisGame.togglePause(),
     };
 
     const handleKeyDown = (event) => {
@@ -130,9 +133,38 @@ export const Play = () => {
     }
   };
 
+  const togglePause = () => {
+    if (game) {
+      game.togglePause();
+      setGamePaused(!gamePaused); // Update React state
+    }
+  };
+
   return (
     <div className="relative flex justify-center mt-6">
       <div className="flex flex-row space-x-8 items-start">
+        <button
+          onClick={togglePause}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          {gamePaused ? "Resume" : "Pause"}
+        </button>
+
+        {/* Full-Screen Pause Overlay */}
+        {gamePaused && (
+          <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+            <div className="text-center">
+              <h2 className="text-4xl font-bold mb-8">Paused</h2>
+              <button
+                onClick={togglePause}
+                className="bg-blue-500 text-white px-6 py-3 rounded text-2xl hover:bg-blue-700"
+              >
+                Resume Game
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Game Canvas */}
         <canvas
           ref={canvasRef}
