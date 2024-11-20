@@ -53,7 +53,7 @@ export default class TetrisGame {
   }
 
   updateGameState(time = 0) {
-    if (this.gameOver) return;
+    if (this.gameOver || this.gamePaused) return;
 
     const deltaTime = time - this.lastTime;
     this.lastTime = time;

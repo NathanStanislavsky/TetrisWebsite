@@ -44,6 +44,7 @@ export const Play = () => {
       ArrowUp: () => tetrisGame.rotatePiece(),
       Shift: () => tetrisGame.storePiece(),
       " ": () => tetrisGame.hardDrop(),
+      "p": () => tetrisGame.togglePause(),
     };
 
     const handleKeyDown = (event) => {
