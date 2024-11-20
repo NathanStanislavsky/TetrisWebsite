@@ -155,6 +155,14 @@ export const Play = () => {
 
       {/* Info Panel */}
       <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
+        <div className="flex flex-row space-x-8 items-start">
+          <button
+            onClick={togglePause}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            {gamePaused ? "Resume" : "Pause"}
+          </button>
+        </div>
         <h2 className="p-5 border">Score: {score}</h2>
         <h3 className="p-5 border">Level: {level}</h3>
         <div className="p-5 border">
@@ -179,15 +187,6 @@ export const Play = () => {
             ></canvas>
           </div>
         </div>
-      </div>
-
-      <div className="flex flex-row space-x-8 items-start">
-        <button
-          onClick={togglePause}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          {gamePaused ? "Resume" : "Pause"}
-        </button>
       </div>
 
       {/* Full-Screen Game Over Overlay */}
