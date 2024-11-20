@@ -45,6 +45,7 @@ export default class TetrisGame {
     this.storedAPiece = false;
     this.nextPiece = this.createPiece();
     this.gameOver = false;
+    this.gamePaused = false;
   }
 
   resetGameState() {
