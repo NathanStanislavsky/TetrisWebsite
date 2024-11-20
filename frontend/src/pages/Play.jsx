@@ -9,9 +9,7 @@ export const Play = () => {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(1);
   const [gameOver, setGameOver] = useState(false);
-
   const [gamePaused, setGamePaused] = useState(false);
-  const [game, setGame] = useState(null);
 
   const tetrisGameRef = useRef(null);
 
@@ -30,12 +28,14 @@ export const Play = () => {
     let animationFrameId;
 
     const gameLoop = (time) => {
-      tetrisGame.updateGameState(time);
-      tetrisGame.renderGridAndPieces();
+      if (!tetrisGame.gamePaused) {
+        tetrisGame.updateGameState(time);
+        tetrisGame.renderGridAndPieces();
 
-      setScore(tetrisGame.score);
-      setLevel(tetrisGame.level);
-      setGameOver(tetrisGame.gameOver);
+        setScore(tetrisGame.score);
+        setLevel(tetrisGame.level);
+        setGameOver(tetrisGame.gameOver);
+      }
 
       animationFrameId = requestAnimationFrame(gameLoop);
     };
@@ -47,7 +47,7 @@ export const Play = () => {
       ArrowUp: () => tetrisGame.rotatePiece(),
       Shift: () => tetrisGame.storePiece(),
       " ": () => tetrisGame.hardDrop(),
-      p: () => tetrisGame.togglePause(),
+      p: () => togglePause(),
     };
 
     const handleKeyDown = (event) => {
@@ -130,13 +130,16 @@ export const Play = () => {
       setGameOver(false);
       setScore(0);
       setLevel(1);
+      setGamePaused(false);
     }
   };
 
   const togglePause = () => {
-    if (game) {
-      game.togglePause();
-      setGamePaused(!gamePaused); // Update React state
+    if (tetrisGameRef.current) {
+      tetrisGameRef.current.togglePause();
+      setGamePaused(tetrisGameRef.current.gamePaused);
+    } else {
+      console.log("Game instance not initialized yet.");
     }
   };
 
@@ -176,9 +179,7 @@ export const Play = () => {
         {/* Info Panel */}
         <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
           <h2 className="p-5 border">Score: {score}</h2>
-
           <h3 className="p-5 border">Level: {level}</h3>
-
           <div className="p-5 border">
             <h4 className="mb-1">Stored Piece</h4>
             <div className="flex flex-col items-center">
@@ -190,7 +191,6 @@ export const Play = () => {
               ></canvas>
             </div>
           </div>
-
           <div className="p-5 border">
             <h4>Next Piece</h4>
             <div className="flex flex-col items-center">
