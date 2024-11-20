@@ -66,6 +66,10 @@ export default class TetrisGame {
 
   }
 
+  togglePause() {
+    this.gamePaused = !this.gamePaused;
+  }
+
   handlePieceDrop() {
     const newPos = {
       x: this.activePiecePosition.x,
