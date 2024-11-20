@@ -158,7 +158,7 @@ export const Play = () => {
         <div className="flex flex-row space-x-8 items-start">
           <button
             onClick={togglePause}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded w-60"
           >
             Pause
           </button>
