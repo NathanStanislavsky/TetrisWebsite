@@ -145,6 +145,57 @@ export const Play = () => {
 
   return (
     <div className="relative flex justify-center mt-6">
+      {/* Full-Screen Pause Overlay */}
+      {gamePaused && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-8">Paused</h2>
+            <button
+              onClick={togglePause}
+              className="bg-blue-500 text-white px-6 py-3 rounded text-2xl hover:bg-blue-700"
+            >
+              Resume Game
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Game Canvas */}
+      <canvas
+        ref={canvasRef}
+        width="300"
+        height="600"
+        className="border"
+      ></canvas>
+
+      {/* Info Panel */}
+      <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
+        <h2 className="p-5 border">Score: {score}</h2>
+        <h3 className="p-5 border">Level: {level}</h3>
+        <div className="p-5 border">
+          <h4 className="mb-1">Stored Piece</h4>
+          <div className="flex flex-col items-center">
+            <canvas
+              ref={storedPieceCanvasRef}
+              width="80"
+              height="80"
+              className="mt-2"
+            ></canvas>
+          </div>
+        </div>
+        <div className="p-5 border">
+          <h4>Next Piece</h4>
+          <div className="flex flex-col items-center">
+            <canvas
+              ref={nextPieceCanvasRef}
+              width="80"
+              height="80"
+              className="mt-2"
+            ></canvas>
+          </div>
+        </div>
+      </div>
+
       <div className="flex flex-row space-x-8 items-start">
         <button
           onClick={togglePause}
@@ -152,57 +203,6 @@ export const Play = () => {
         >
           {gamePaused ? "Resume" : "Pause"}
         </button>
-
-        {/* Full-Screen Pause Overlay */}
-        {gamePaused && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
-            <div className="text-center">
-              <h2 className="text-4xl font-bold mb-8">Paused</h2>
-              <button
-                onClick={togglePause}
-                className="bg-blue-500 text-white px-6 py-3 rounded text-2xl hover:bg-blue-700"
-              >
-                Resume Game
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Game Canvas */}
-        <canvas
-          ref={canvasRef}
-          width="300"
-          height="600"
-          className="border"
-        ></canvas>
-
-        {/* Info Panel */}
-        <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
-          <h2 className="p-5 border">Score: {score}</h2>
-          <h3 className="p-5 border">Level: {level}</h3>
-          <div className="p-5 border">
-            <h4 className="mb-1">Stored Piece</h4>
-            <div className="flex flex-col items-center">
-              <canvas
-                ref={storedPieceCanvasRef}
-                width="80"
-                height="80"
-                className="mt-2"
-              ></canvas>
-            </div>
-          </div>
-          <div className="p-5 border">
-            <h4>Next Piece</h4>
-            <div className="flex flex-col items-center">
-              <canvas
-                ref={nextPieceCanvasRef}
-                width="80"
-                height="80"
-                className="mt-2"
-              ></canvas>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Full-Screen Game Over Overlay */}
