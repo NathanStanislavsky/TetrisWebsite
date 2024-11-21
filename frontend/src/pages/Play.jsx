@@ -206,7 +206,7 @@ export const Play = () => {
 
       {/* Full-Screen Pause Overlay */}
       {gamePaused && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+        <div className="fixed top-32 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-8">Paused</h2>
             <button
