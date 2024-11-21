@@ -9,6 +9,7 @@ export const Play = () => {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(1);
   const [gameOver, setGameOver] = useState(false);
+  const [gamePaused, setGamePaused] = useState(false);
 
   const tetrisGameRef = useRef(null);
 
@@ -27,12 +28,14 @@ export const Play = () => {
     let animationFrameId;
 
     const gameLoop = (time) => {
-      tetrisGame.updateGameState(time);
-      tetrisGame.renderGridAndPieces();
+      if (!tetrisGame.gamePaused) {
+        tetrisGame.updateGameState(time);
+        tetrisGame.renderGridAndPieces();
 
-      setScore(tetrisGame.score);
-      setLevel(tetrisGame.level);
-      setGameOver(tetrisGame.gameOver);
+        setScore(tetrisGame.score);
+        setLevel(tetrisGame.level);
+        setGameOver(tetrisGame.gameOver);
+      }
 
       animationFrameId = requestAnimationFrame(gameLoop);
     };
@@ -44,6 +47,7 @@ export const Play = () => {
       ArrowUp: () => tetrisGame.rotatePiece(),
       Shift: () => tetrisGame.storePiece(),
       " ": () => tetrisGame.hardDrop(),
+      p: () => togglePause(),
     };
 
     const handleKeyDown = (event) => {
@@ -126,48 +130,61 @@ export const Play = () => {
       setGameOver(false);
       setScore(0);
       setLevel(1);
+      setGamePaused(false);
+    }
+  };
+
+  const togglePause = () => {
+    if (tetrisGameRef.current) {
+      tetrisGameRef.current.togglePause();
+      setGamePaused(tetrisGameRef.current.gamePaused);
+    } else {
+      console.log("Game instance not initialized yet.");
     }
   };
 
   return (
     <div className="relative flex justify-center mt-6">
-      <div className="flex flex-row space-x-8 items-start">
-        {/* Game Canvas */}
-        <canvas
-          ref={canvasRef}
-          width="300"
-          height="600"
-          className="border"
-        ></canvas>
+      {/* Game Canvas */}
+      <canvas
+        ref={canvasRef}
+        width="300"
+        height="600"
+        className="border"
+      ></canvas>
 
-        {/* Info Panel */}
-        <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
-          <h2 className="p-5 border">Score: {score}</h2>
-
-          <h3 className="p-5 border">Level: {level}</h3>
-
-          <div className="p-5 border">
-            <h4 className="mb-1">Stored Piece</h4>
-            <div className="flex flex-col items-center">
-              <canvas
-                ref={storedPieceCanvasRef}
-                width="80"
-                height="80"
-                className="mt-2"
-              ></canvas>
-            </div>
+      {/* Info Panel */}
+      <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
+        <div className="flex flex-row space-x-8 items-start">
+          <button
+            onClick={togglePause}
+            className="bg-blue-500 text-white px-4 py-2 rounded w-60"
+          >
+            Pause
+          </button>
+        </div>
+        <h2 className="p-5 border">Score: {score}</h2>
+        <h3 className="p-5 border">Level: {level}</h3>
+        <div className="p-5 border">
+          <h4 className="mb-1">Stored Piece</h4>
+          <div className="flex flex-col items-center">
+            <canvas
+              ref={storedPieceCanvasRef}
+              width="80"
+              height="80"
+              className="mt-2"
+            ></canvas>
           </div>
-
-          <div className="p-5 border">
-            <h4>Next Piece</h4>
-            <div className="flex flex-col items-center">
-              <canvas
-                ref={nextPieceCanvasRef}
-                width="80"
-                height="80"
-                className="mt-2"
-              ></canvas>
-            </div>
+        </div>
+        <div className="p-5 border">
+          <h4>Next Piece</h4>
+          <div className="flex flex-col items-center">
+            <canvas
+              ref={nextPieceCanvasRef}
+              width="80"
+              height="80"
+              className="mt-2"
+            ></canvas>
           </div>
         </div>
       </div>
@@ -182,6 +199,21 @@ export const Play = () => {
               className="bg-red-500 text-white px-6 py-3 rounded text-2xl hover:bg-red-700"
             >
               Restart Game
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Full-Screen Pause Overlay */}
+      {gamePaused && (
+        <div className="fixed top-32 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-8">Paused</h2>
+            <button
+              onClick={togglePause}
+              className="bg-blue-500 text-white px-6 py-3 rounded text-2xl hover:bg-blue-700"
+            >
+              Resume Game
             </button>
           </div>
         </div>

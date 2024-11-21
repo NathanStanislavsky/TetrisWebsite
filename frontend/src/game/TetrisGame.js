@@ -45,6 +45,7 @@ export default class TetrisGame {
     this.storedAPiece = false;
     this.nextPiece = this.createPiece();
     this.gameOver = false;
+    this.gamePaused = false;
   }
 
   resetGameState() {
@@ -52,7 +53,7 @@ export default class TetrisGame {
   }
 
   updateGameState(time = 0) {
-    if (this.gameOver) return;
+    if (this.gameOver || this.gamePaused) return;
 
     const deltaTime = time - this.lastTime;
     this.lastTime = time;
@@ -63,6 +64,11 @@ export default class TetrisGame {
       this.dropCounter = 0;
     }
 
+  }
+
+  togglePause() {
+    this.gamePaused = !this.gamePaused;
+    console.log("Game paused:", this.gamePaused);
   }
 
   handlePieceDrop() {

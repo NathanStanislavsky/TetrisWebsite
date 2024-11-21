@@ -16,6 +16,7 @@ const Home = () => {
           <li><strong>Soft Drop:</strong> Use the down arrow key to move the piece down faster.</li>
           <li><strong>Hard Drop:</strong> Press the spacebar to drop the piece instantly.</li>
           <li><strong>Store Piece:</strong> Press the shift to store the current piece instantly.</li>
+          <li><strong>Pause Game:</strong> Press the "p" to pause the game.</li>
         </ul>
       </div>
       <div>
