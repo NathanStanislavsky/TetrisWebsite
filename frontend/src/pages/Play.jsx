@@ -11,6 +11,9 @@ export const Play = () => {
   const [gameOver, setGameOver] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
 
+  const [isHighScore, setIsHighScore] = useState(false);
+  const [playerName, setPlayerName] = useState("");
+
   const tetrisGameRef = useRef(null);
 
   useEffect(() => {
@@ -66,62 +69,55 @@ export const Play = () => {
 
   useEffect(() => {
     if (gameOver) {
-      const submitScore = async () => {
+      const checkHighScore = async () => {
         try {
-          // Submit the new score
-          const response = await fetch("http://localhost:3000/api/newScore", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              player: "PlayerName",
-              score: score,
-              date: new Date(),
-            }),
-          });
-
+          const response = await fetch("http://localhost:3000/api/scores");
+  
           if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to submit score");
+            throw new Error(`API Error: ${response.statusText}`);
           }
-
-          console.log("Score submitted successfully");
-
-          // Fetch all scores to check if cleanup is needed
-          const scoresResponse = await fetch(
-            "http://localhost:3000/api/scores"
-          );
-          if (!scoresResponse.ok) {
-            throw new Error("Failed to fetch scores");
-          }
-
-          const scores = await scoresResponse.json();
-          console.log("Fetched scores:", scores);
-
-          // Delete the smallest score if there are more than 10
-          if (scores.length > 10) {
-            const deleteResponse = await fetch(
-              "http://localhost:3000/api/deleteScore",
-              {
-                method: "DELETE",
-              }
-            );
-
-            if (!deleteResponse.ok) {
-              throw new Error("Failed to delete the smallest score");
+  
+          const data = await response.json(); // The response is an object with a `scores` property
+          const scores = data.scores; // Access the scores array
+  
+          if (Array.isArray(scores)) {
+            if (scores.length < 10 || score > Math.min(...scores.map((s) => s.score))) {
+              setIsHighScore(true); // Trigger the high-score overlay
+            } else {
+              submitScore("PlayerName");
             }
-
-            console.log("Smallest score deleted successfully");
+          } else {
+            console.error("Scores is not an array:", scores);
           }
         } catch (error) {
-          console.error("Error handling leaderboard:", error.message);
+          console.error("Error checking high scores:", error.message);
         }
       };
-
-      submitScore();
+  
+      checkHighScore();
     }
   }, [gameOver, score]);
+
+  const submitScore = async (name) => {
+    try {
+      await fetch("http://localhost:3000/api/newScore", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ player: name, score, date: new Date() }),
+      });
+
+      console.log("Score submitted successfully");
+      setPlayerName(""); // Reset player name
+    } catch (error) {
+      console.error("Error submitting score:", error.message);
+    }
+  };
+
+  const handleNameSubmit = () => {
+    submitScore(playerName);
+    setIsHighScore(false); // Close high-score overlay
+    restartGame();
+  };
 
   const restartGame = () => {
     if (tetrisGameRef.current) {
@@ -183,8 +179,8 @@ export const Play = () => {
         </div>
       </div>
 
-      {/* Full-Screen Game Over Overlay */}
-      {gameOver && (
+      {/* Game Over Overlay */}
+      {gameOver && !isHighScore && (
         <div className="fixed top-32 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-8">Game Over</h2>
@@ -193,6 +189,28 @@ export const Play = () => {
               className="bg-red-500 text-white px-6 py-3 rounded text-2xl hover:bg-red-700"
             >
               Restart Game
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* High Score Overlay */}
+      {isHighScore && (
+        <div className="fixed top-32 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-75 text-white z-50">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-8">New High Score!</h2>
+            <input
+              type="text"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder="Enter your name"
+              className="text-black px-4 py-2 rounded mb-4 w-60 text-center"
+            />
+            <button
+              onClick={handleNameSubmit}
+              className="bg-green-500 text-white px-6 py-3 rounded text-2xl hover:bg-green-700"
+            >
+              Submit Score
             </button>
           </div>
         </div>
