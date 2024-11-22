@@ -144,7 +144,7 @@ export const Play = () => {
       ></canvas>
 
       {/* Info Panel */}
-      <div className="text-left text-white bg-slate-800 p-4 w-60 text-3xl font-custom">
+      <div className="text-left text-white bg-slate-800 p-4 w-60 text-2xl font-custom">
         <div className="flex flex-row space-x-8 items-start">
           <button
             onClick={togglePause}
