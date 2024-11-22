@@ -28,15 +28,14 @@ export const Play = () => {
     let animationFrameId;
 
     const gameLoop = (time) => {
-      if (!tetrisGame.gamePaused) {
+      if (!gamePaused) {
         tetrisGame.updateGameState(time);
         tetrisGame.renderGridAndPieces();
-
+    
         setScore(tetrisGame.score);
         setLevel(tetrisGame.level);
         setGameOver(tetrisGame.gameOver);
       }
-
       animationFrameId = requestAnimationFrame(gameLoop);
     };
 
@@ -135,12 +134,7 @@ export const Play = () => {
   };
 
   const togglePause = () => {
-    if (tetrisGameRef.current) {
-      tetrisGameRef.current.togglePause();
-      setGamePaused(tetrisGameRef.current.gamePaused);
-    } else {
-      console.log("Game instance not initialized yet.");
-    }
+    setGamePaused((prev) => !prev);
   };
 
   return (
