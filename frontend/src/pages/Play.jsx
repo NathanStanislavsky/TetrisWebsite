@@ -31,6 +31,11 @@ export const Play = () => {
     let animationFrameId;
 
     const gameLoop = (time) => {
+      if (gameOver) {
+        cancelAnimationFrame(animationFrameId);
+        return; // Stop the game loop when the game is over
+      }
+    
       if (!gamePaused) {
         tetrisGame.updateGameState(time);
         tetrisGame.renderGridAndPieces();
@@ -39,6 +44,7 @@ export const Play = () => {
         setLevel(tetrisGame.level);
         setGameOver(tetrisGame.gameOver);
       }
+    
       animationFrameId = requestAnimationFrame(gameLoop);
     };
 
@@ -130,7 +136,12 @@ export const Play = () => {
   };
 
   const togglePause = () => {
-    setGamePaused((prev) => !prev);
+    if (tetrisGameRef.current) {
+      tetrisGameRef.current.togglePause();
+      setGamePaused(tetrisGameRef.current.gamePaused);
+    } else {
+      console.log("Game instance not initialized yet.");
+    }
   };
 
   return (
