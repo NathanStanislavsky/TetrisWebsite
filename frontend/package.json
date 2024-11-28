@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "homepage": "https://NathanStanislavsky.github.io/TetrisWebsite",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",

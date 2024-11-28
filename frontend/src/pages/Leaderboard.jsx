@@ -7,7 +7,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/scores");
+        const response = await fetch("http://localhost:5050/api/scores");
         if (!response.ok) {
           throw new Error("Failed to fetch leaderboard data");
         }
