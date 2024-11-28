@@ -71,7 +71,6 @@ TetrisWebsite/
 ### Tools & Infrastructure
 
 - **Containerization**: Docker & Docker Compose
-- **Deployment**: Compatible with Vercel
 - **Version Control**: GitHub
 
 ---
