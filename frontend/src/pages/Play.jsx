@@ -77,7 +77,7 @@ export const Play = () => {
     if (gameOver) {
       const checkHighScore = async () => {
         try {
-          const response = await fetch("http://localhost:3000/api/scores");
+          const response = await fetch("http://localhost:5050/api/scores");
   
           if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
@@ -106,7 +106,7 @@ export const Play = () => {
 
   const submitScore = async (name) => {
     try {
-      await fetch("http://localhost:3000/api/newScore", {
+      await fetch("http://localhost:5050/api/newScore", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ player: name, score, date: new Date() }),
