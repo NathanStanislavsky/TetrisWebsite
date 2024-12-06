@@ -22,6 +22,7 @@ Ensure you have the following installed on your system:
 ## Getting Started
 
 ## Install Dependencies
+```cd frontend```
 ```npm install```
 
 ## Run the Development Server
