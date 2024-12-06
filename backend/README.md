@@ -7,11 +7,13 @@ This is the backend service for the **TetrisWebsite** project. It handles game l
 ## Features
 
 - **API Endpoints**: Provides RESTful APIs for:
-  - Game score submission
-  - Retrieving the leaderboard
+  - Adding a score to the leaderboard
+  - Getting the leaderboard data
+  - Deleting a highscore from the database
+  - Getting the smallest score
 - **Database Integration**: MongoDB for persistent data storage.
-- **Environment Variables**: Configurable with a `.env` file for secure and flexible deployment.
-- **Dockerized**: Easily deployable using Docker.
+- **Environment Variables**: Utilizes `.env` file 
+- **Dockerized**: Employs containerization with Docker
 
 ---
 
@@ -62,7 +64,7 @@ backend/
 Create a .env file in the backend/ folder with the following variables:
 
 ```javascript
-MONGO_URI=mongodb://localhost:27017/tetris
+DB_CONNECTION_STRING=`your-mongodb-connection-string`
 PORT=5050
 ```
 
@@ -70,7 +72,7 @@ PORT=5050
 
 ### Prerequisites
 • Install Node.js and npm.
-• Ensure MongoDB is running locally or provide a remote connection string.
+• Ensure MongoDB setup properly and conneciton string is added to environment variables
 
 ### Setup
 

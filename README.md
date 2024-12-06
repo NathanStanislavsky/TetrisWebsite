@@ -8,7 +8,7 @@ The TetrisWebsite project is a full-stack web application that recreates the cla
 - A **backend API** for handling game logic, user scores, and leaderboard functionality.
 - A **MongoDB** database for persistent leaderboard storage.
 
-The project is containerized using Docker Compose to simplify deployment and ensure consistency across environments.
+The project is containerized using Docker Compose to ensure consistency across environments.
 
 ---
 
@@ -59,7 +59,7 @@ TetrisWebsite/
 
 ### Frontend
 
-- **Framework**: React.js (or specify your frontend framework)
+- **Framework**: React.js
 - **Styling**: Tailwind CSS
 
 ### Backend
@@ -82,7 +82,7 @@ TetrisWebsite/
 Ensure the following are installed:
 
 - Docker and Docker Compose
-- (Optional) Node.js and npm if running locally
+- Node.js and npm if running locally
 
 ### Setup
 
