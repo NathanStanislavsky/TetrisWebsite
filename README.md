@@ -17,7 +17,6 @@ The project is containerized using Docker Compose to ensure consistency across e
 - **Play Tetris**: Fully functional Tetris game with smooth gameplay and animations.
 - **Leaderboard**: Tracks and displays high scores.
 - **Responsive Design**: Optimized for desktop.
-- **Containerized Setup**: Easily run and deploy the application using Docker.
 
 ---
 
