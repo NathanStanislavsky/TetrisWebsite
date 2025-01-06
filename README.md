@@ -88,7 +88,7 @@ Ensure the following are installed:
 1. Clone the Repository:
 
    ```bash
-   git clone https://github.com/<your-username>/TetrisWebsite.git
+   git clone https://github.com/NathanStanislavsky/TetrisWebsite.git
    cd TetrisWebsite
    ```
 
@@ -110,7 +110,7 @@ To run the frontend locally:
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
 ### Backend
