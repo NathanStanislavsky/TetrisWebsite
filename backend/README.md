@@ -61,7 +61,7 @@ backend/
 
 ## Environment Variables
 
-Create a .env file in the backend/ folder with the following variables:
+Create a .env file in the backend folder with the following variables:
 
 ```javascript
 DB_CONNECTION_STRING=`your-mongodb-connection-string`
@@ -72,7 +72,7 @@ PORT=5050
 
 ### Prerequisites
 • Install Node.js and npm.
-• Ensure MongoDB setup properly and conneciton string is added to environment variables
+• Ensure MongoDB setup properly and connection string is added to environment variables
 
 ### Setup
 
