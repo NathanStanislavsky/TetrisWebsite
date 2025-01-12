@@ -89,8 +89,6 @@ export const Play = () => {
           if (Array.isArray(scores)) {
             if (scores.length < 10 || score > Math.min(...scores.map((s) => s.score))) {
               setIsHighScore(true); // Trigger the high-score overlay
-            } else {
-              submitScore("PlayerName");
             }
           } else {
             console.error("Scores is not an array:", scores);
